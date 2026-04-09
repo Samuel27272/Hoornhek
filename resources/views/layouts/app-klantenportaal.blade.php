@@ -17,26 +17,44 @@
         .navbar {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 15px 40px;
+            background: #6b3b1d;
+            position: relative;
+        }
+
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 101%;
             background: #cfc8a9;
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
+            filter: drop-shadow(4px 0 6px rgba(0, 0, 0, 0.4));
         }
 
         .menu a {
             margin: 0 10px;
             text-decoration: none;
-            color: black;
+            color: white;
         }
 
-        .btn {
-            background: #6b3b1d;
-            color: white;
+        .login {
+            background: #cfc8a9;
+            color: black !important;
             padding: 8px 15px;
             border: none;
+            border-radius: 5px;
         }
 
         .hero {
-            height: 100vh;
-            background: url('/images/building.jpg') center/cover no-repeat;
+            height: min(100vh);
+            background-image: url('/images/building.png');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
             position: relative;
         }
 
@@ -85,9 +103,26 @@
         .contact {
             background: #6b3b1d;
             color: white;
-            padding: 20px;
+            padding: 20px 40px;
+            position: relative;
         }
 
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 45%;
+            height: 100%;
+            background: #cfc8a9;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%);
+            filter: drop-shadow(-4px 0 6px rgba(0, 0, 0, 0.4));
+        }
+
+        .logo {
+            position: relative;
+            z-index: 1;
+        }
         .logo img {
             height: 60px;
         }
@@ -97,18 +132,21 @@
             align-items: center;
         }
     </style>
+
 </head>
 <body>
 
 <nav class="navbar">
-    <div class="logo">
-    <img src="{{ asset('images/logo.png') }}" alt="HoornHek logo">
-    </div>
+    <a class="logo-link" href="{{ url('/') }}">
+        <div class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="HoornHek logo">
+        </div>
+    </a>
 
     <div class="menu">
         <a href="#about">Over ons</a>
         <a href="#contact">Contact</a>
-        <button class="btn">Inloggen</button>
+        <a href="{{ route('login') }}" class="login">Inloggen</a>
     </div>
 </nav>
 
