@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Hekkensluiter</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        /* Header style matching the screenshot: thin border box, tab-like buttons */
+        body { margin:0; font-family: Arial, Helvetica, sans-serif; background:#e8e8e8; }
+        .hs-header { background:#efefef; border:1px solid #999; padding:8px 12px; }
+        .hs-topbar { display:flex; align-items:center; gap:12px; }
+        .hs-logo { display:flex; align-items:center; gap:8px; }
+        .hs-logo img { height:26px; }
+        .hs-tabs { margin-left:12px; display:flex; gap:6px; }
+        .hs-tab { background:#ddd; border:1px solid #bbb; padding:6px 10px; border-radius:3px; text-decoration:none; color:#111; font-size:14px; }
+        .hs-tab.active { background:#fff; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.06); }
+        .hs-actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
+        .hs-search { background:#eee; border:1px solid #ccc; padding:6px 10px; border-radius:18px; display:flex; align-items:center; gap:8px; }
+        .hs-search input { border:0; background:transparent; outline:none; width:160px; font-size:13px; }
+        .hs-search button { background:transparent; border:0; cursor:pointer; color:#666; font-size:18px; padding:0; }
+        .container { max-width:1100px; margin:12px auto; padding:0 14px; }
+        .panel { background:white; border:1px solid #ccc; padding:8px; margin-top:4px; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        table thead { background:#f5f5f5; }
+        table th { text-align:left; padding:8px 6px; border:1px solid #ddd; font-weight:600; }
+        table td { padding:6px; border:1px solid #e5e5e5; }
+        .hs-actions-cell { white-space:nowrap; text-align:center; }
+        .hs-icon-btn { background:none; border:1px solid #ccc; width:20px; height:20px; cursor:pointer; padding:2px; margin:0 2px; border-radius:2px; font-size:11px; line-height:1; }
+        .hs-icon-btn:hover { background:#f0f0f0; }
+    </style>
+</head>
+<body>
+
+<header class="hs-header">
+    <div class="container hs-topbar">
+        <div class="hs-logo">
+            <img src="{{ asset('images/logo.png') }}" alt="logo">
+            <strong>Hekkensluiter applicatie</strong>
+        </div>
+
+        <nav class="hs-tabs" aria-label="Hoofdmenu">
+            <a class="hs-tab {{ Route::is('gedetineerden.*') ? 'active' : '' }}" href="{{ route('gedetineerden.index') }}">Gedetineerden</a>
+            <a class="hs-tab {{ Route::is('zaken.*') ? 'active' : '' }}" href="{{ route('zaken.index') }}">Zaken</a>
+            <a class="hs-tab {{ Route::is('cellen.*') ? 'active' : '' }}" href="{{ route('cellen.index') }}">Cellen</a>
+            <a class="hs-tab {{ Route::is('bezoekers.*') ? 'active' : '' }}" href="{{ route('bezoekers.index') }}">Bezoekers</a>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="hs-tab" style="cursor: pointer" type="submit">Uitloggen</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="container" role="main">
+    <div class="panel">
+        @yield('content')
+    </div>
+</main>
+
+</body>
+</html>
