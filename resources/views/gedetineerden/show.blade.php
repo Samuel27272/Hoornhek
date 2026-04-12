@@ -195,6 +195,21 @@
 @if(in_array(auth()->user()->rol, ['bewaker', 'developer']))
     <div style="display:flex; gap:8px; justify-content:center;">
         <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $gedetineerde->id]) }}" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-block;">Bewerk</a>
+
+        @if($gedetineerde->status === 'actief')
+            <form action="{{ route('gedetineerden.ontslaan', $gedetineerde) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('PATCH')
+                <button type="submit" onclick="return confirm('Gedetineerde ontslaan?')" style="background:#fd7e14; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px;">Ontslaan</button>
+            </form>
+        @else
+            <form action="{{ route('gedetineerden.herplaatsen', $gedetineerde) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('PATCH')
+                <button type="submit" onclick="return confirm('Gedetineerde opnieuw activeren?')" style="background:#28a745; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px;">Activeren</button>
+            </form>
+        @endif
+
         <form action="{{ route('gedetineerden.destroy', ['gedetineerden' => $gedetineerde->id]) }}" method="POST" style="display:inline;">
             @csrf
             @method('DELETE')

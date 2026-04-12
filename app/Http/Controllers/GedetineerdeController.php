@@ -225,4 +225,53 @@ class GedetineerdeController extends Controller
 
         return back()->with('success', 'Document verwijderd.');
     }
+
+    public function ontslaan(Gedetineerde $gedetineerden)
+    {
+        if ($gedetineerden->cel_id) {
+            $cel = Cel::find($gedetineerden->cel_id);
+            /** @var \App\Models\Cel $cel */
+            if ($cel && $cel->gedetineerden()->count() === 1) {
+                $cel->update(['status' => 'beschikbaar']);
+            }
+
+            Historie::create([
+                'gedetineerde_id' => $gedetineerden->id,
+                'uitgevoerd_door' => Auth::user()->id,
+                'gebeurtenis'     => "Gedetineerde ontslagen en cel {$cel->cel_nummer} vrijgegeven.",
+                'cel_oud'         => $gedetineerden->cel_id,
+                'cel_nieuw'       => null,
+                'type'            => 'ontslag',
+                'datum'           => now(),
+            ]);
+        }
+
+        $gedetineerden->update([
+            'status'          => 'inactief',
+            'cel_id'          => null,
+            'datum_schorsing' => now(),
+        ]);
+
+        return back()->with('success', 'Gedetineerde ontslagen.');
+    }
+
+    public function herplaatsen(Gedetineerde $gedetineerden)
+    {
+        $gedetineerden->update([
+            'status'          => 'actief',
+            'datum_schorsing' => null,
+        ]);
+
+        Historie::create([
+            'gedetineerde_id' => $gedetineerden->id,
+            'uitgevoerd_door' => Auth::user()->id,
+            'gebeurtenis'     => "Gedetineerde opnieuw geactiveerd.",
+            'cel_oud'         => null,
+            'cel_nieuw'       => null,
+            'type'            => 'overig',
+            'datum'           => now(),
+        ]);
+
+        return back()->with('success', 'Gedetineerde opnieuw geactiveerd.');
+    }
 }
