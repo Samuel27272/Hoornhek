@@ -13,9 +13,18 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        $redirect = route_exists('gedetineerden.index') ? route('gedetineerden.index') : route('dashboard');
 
-        return redirect()->intended($redirect ?: '/');
+        $rol = $request->user()->rol ?? null;
+
+        $redirect = match($rol) {
+            'portier'                    => route('bezoekers.index'),
+            'maatschappelijk_werker' => route('gedetineerden.index'),
+            'bewaker'                    => route('gedetineerden.index'),
+            'developer'                  => route('gedetineerden.index'),
+            default                      => '/dashboard',
+        };
+
+        return redirect()->intended($redirect);
     }
 }
 

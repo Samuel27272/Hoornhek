@@ -40,10 +40,18 @@
         </div>
 
         <nav class="hs-tabs" aria-label="Hoofdmenu">
-            <a class="hs-tab {{ Route::is('gedetineerden.*') ? 'active' : '' }}" href="{{ route('gedetineerden.index') }}">Gedetineerden</a>
-            <a class="hs-tab {{ Route::is('zaken.*') ? 'active' : '' }}" href="{{ route('zaken.index') }}">Zaken</a>
-            <a class="hs-tab {{ Route::is('cellen.*') ? 'active' : '' }}" href="{{ route('cellen.index') }}">Cellen</a>
-            <a class="hs-tab {{ Route::is('bezoekers.*') ? 'active' : '' }}" href="{{ route('bezoekers.index') }}">Bezoekers</a>
+            @if(in_array(auth()->user()->rol, ['bewaker', 'developer', 'maatschappelijk_werker']))
+                <a class="hs-tab {{ Route::is('gedetineerden.*') ? 'active' : '' }}" href="{{ route('gedetineerden.index') }}">Gedetineerden</a>
+            @endif
+
+            @if(in_array(auth()->user()->rol, ['bewaker', 'developer']))
+                <a class="hs-tab {{ Route::is('zaken.*') ? 'active' : '' }}" href="{{ route('zaken.index') }}">Zaken</a>
+                <a class="hs-tab {{ Route::is('cellen.*') ? 'active' : '' }}" href="{{ route('cellen.index') }}">Cellen</a>
+            @endif
+
+            @if(in_array(auth()->user()->rol, ['portier', 'bewaker', 'developer']))
+                <a class="hs-tab {{ Route::is('bezoekers.*') ? 'active' : '' }}" href="{{ route('bezoekers.index') }}">Bezoekers</a>
+            @endif
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

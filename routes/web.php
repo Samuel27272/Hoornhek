@@ -12,14 +12,30 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
-    // CRUD routes for gedetineerden
-    Route::resource('gedetineerden', GedetineerdeController::class);
-    // CRUD routes for cellen
-    Route::resource('cellen', CelController::class);
-    // CRUD routes for zaken
-    Route::resource('zaken', ZaakController::class);
-    // CRUD routes for bezoekers
-    Route::resource('bezoekers', BezoekerController::class);
+
+    // Gedetineerden — maatschappelijk medewerker mag alleen index en show
+    Route::middleware('rol:maatschappelijk_werker,bewaker,developer')->group(function () {
+        Route::resource('gedetineerden', GedetineerdeController::class)->only(['index', 'show']);
+    });
+
+    Route::middleware('rol:bewaker,developer')->group(function () {
+        Route::resource('gedetineerden', GedetineerdeController::class)->except(['index', 'show']);
+    });
+
+    // Cellen — alleen bewaker en developer
+    Route::middleware('rol:bewaker,developer')->group(function () {
+        Route::resource('cellen', CelController::class);
+    });
+
+    // Zaken — alleen bewaker en developer
+    Route::middleware('rol:bewaker,developer')->group(function () {
+        Route::resource('zaken', ZaakController::class);
+    });
+
+    // Bezoekers — portier, bewaker en developer
+    Route::middleware('rol:portier,bewaker,developer')->group(function () {
+        Route::resource('bezoekers', BezoekerController::class);
+    });
 });
 
 require __DIR__.'/settings.php';

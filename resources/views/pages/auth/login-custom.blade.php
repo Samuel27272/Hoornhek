@@ -93,6 +93,10 @@
                         </div>
                     @endif
 
+                    @if(session('error'))
+                        <p style="color: red; font-size: 13px;">{{ session('error') }}</p>
+                    @endif
+
                     <label for="email" class="label">E-mail</label>
                     <input id="email" name="email" type="email" class="input" placeholder="E-mail" value="{{ old('email') }}" required autofocus>
 

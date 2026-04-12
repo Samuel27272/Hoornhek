@@ -35,12 +35,15 @@
             <td>{{ optional($g->cel)->cel_nummer }}</td>
             <td class="hs-actions-cell">
                 <a href="{{ route('gedetineerden.show', ['gedetineerden' => $g->id]) }}" class="hs-icon-btn" title="Bekijk">👁</a>
-                <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $g->id]) }}" class="hs-icon-btn" title="Bewerk">✎</a>
-                <form action="{{ route('gedetineerden.destroy', ['gedetineerden' => $g->id]) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="hs-icon-btn" title="Verwijder" onclick="return confirm('Verwijderen?')">🗑</button>
-                </form>
+
+                @if(in_array(auth()->user()->rol, ['bewaker', 'developer']))
+                    <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $g->id]) }}" class="hs-icon-btn" title="Bewerk">✎</a>
+                    <form action="{{ route('gedetineerden.destroy', ['gedetineerden' => $g->id]) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="hs-icon-btn" title="Verwijder" onclick="return confirm('Verwijderen?')">🗑</button>
+                    </form>
+                @endif
             </td>
         </tr>
     @empty
