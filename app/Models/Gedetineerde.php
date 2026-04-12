@@ -52,7 +52,7 @@ class Gedetineerde extends Model
 
     public function historie()
     {
-        return $this->hasMany(Historie::class, 'gedetineerde_id');
+        return $this->hasMany(Historie::class, 'gedetineerde_id')->orderBy('datum', 'desc');
     }
 
     public function zaken()

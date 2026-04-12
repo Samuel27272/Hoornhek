@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\Historie;
 use App\Models\Zaak;
 use App\Models\Cel;
 use App\Models\Gedetineerde;
@@ -82,7 +84,7 @@ class GedetineerdeController extends Controller
     /** Display the specified resource. */
     public function show(Gedetineerde $gedetineerden)
     {
-        $gedetineerden->load('cel', 'documenten', 'zaken');
+        $gedetineerden->load('cel', 'documenten', 'zaken', 'historie');
 
         return view('gedetineerden.show', ['gedetineerde' => $gedetineerden]);
     }
@@ -142,6 +144,21 @@ public function update(Request $request, Gedetineerde $gedetineerden)
                     $newCel->update(['status' => 'bezet']);
                 }
             }
+        }
+
+        if ($oldCelId !== $newCelId) {
+            $oudeCel = $oldCelId ? Cel::find($oldCelId)?->cel_nummer : '—';
+            $nieuweCel = $newCelId ? Cel::find($newCelId)?->cel_nummer : '—';
+
+            Historie::create([
+                'gedetineerde_id' => $gedetineerden->id,
+                'uitgevoerd_door' => Auth::user()->id,
+                'gebeurtenis'     => "Verplaatst van cel {$oudeCel} naar cel {$nieuweCel}",
+                'cel_oud'         => $oldCelId,
+                'cel_nieuw'       => $newCelId,
+                'type'            => 'overplaatsing',
+                'datum'           => now(),
+            ]);
         }
 
         $gedetineerden->update($data);
