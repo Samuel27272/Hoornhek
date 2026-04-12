@@ -23,7 +23,7 @@ class ZaakController extends Controller
             });
         }
 
-        $zaken = $query->orderBy('datum_aangemaakt', 'desc')->paginate(15)->withQueryString();
+        $zaken = $query->orderBy('zaaknummer')->paginate(15)->withQueryString();
 
         return view('zaken.index', compact('zaken', 'q'));
     }

@@ -48,6 +48,31 @@
     </dl>
 </div>
 
+<h3 style="margin: 24px 0 12px 0; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #374151;">Gekoppelde zaken</h3>
+
+<div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; border-radius:3px; margin-bottom:16px;">
+    @if($gedetineerde->zaken->isEmpty())
+        <p style="font-size:13px; color:#6b7280; margin:0;">Geen zaken gekoppeld.</p>
+    @else
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead>
+                <tr style="border-bottom:1px solid #ddd;">
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Zaaknummer</th>
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Omschrijving</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($gedetineerde->zaken as $zaak)
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:6px 8px;">{{ $zaak->zaaknummer }}</td>
+                    <td style="padding:6px 8px;">{{ $zaak->omschrijving }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
+
 <div style="display:flex; gap:8px;">
     <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $gedetineerde->id]) }}" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-block;">Bewerk</a>
     <form action="{{ route('gedetineerden.destroy', ['gedetineerden' => $gedetineerde->id]) }}" method="POST" style="display:inline;">

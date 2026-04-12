@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Zaak;
 use App\Models\Cel;
 use App\Models\Gedetineerde;
 use Illuminate\Http\Request;
@@ -34,8 +35,9 @@ class GedetineerdeController extends Controller
     {
         $gedetineerde = new Gedetineerde;
         $cellen = Cel::where('status', 'beschikbaar')->orderBy('cel_nummer')->get();
+        $alleZaken = Zaak::all();
 
-        return view('gedetineerden.create', compact('gedetineerde', 'cellen'));
+        return view('gedetineerden.create', compact('gedetineerde', 'cellen', 'alleZaken'));
     }
 
     /** Store a newly created resource in storage. */
@@ -56,9 +58,10 @@ class GedetineerdeController extends Controller
             'datum_schorsing' => 'nullable|date',
             'cel_id' => 'nullable|exists:cellen,id',
             'opmerkingen' => 'nullable|string',
+            'zaken' => 'nullable|array',
+            'zaken.*' => 'exists:zaken,id',
         ]);
 
-        // Mark cell as occupied when creating new gedetineerde
         if ($data['cel_id'] ?? null) {
             $cel = Cel::find($data['cel_id']);
             if ($cel) {
@@ -67,7 +70,11 @@ class GedetineerdeController extends Controller
             }
         }
 
-        Gedetineerde::create($data);
+        $gedetineerde = Gedetineerde::create($data);
+
+        if ($request->filled('zaken')) {
+            $gedetineerde->zaken()->attach($request->zaken);
+        }
 
         return redirect()->route('gedetineerden.index')->with('success', 'Gedetineerde aangemaakt.');
     }
@@ -84,16 +91,18 @@ class GedetineerdeController extends Controller
     public function edit(Gedetineerde $gedetineerden)
     {
         $gedetineerde = $gedetineerden;
+        $gedetineerde->load('zaken');
         $cellen = Cel::where('status', 'beschikbaar')
             ->orWhere('id', $gedetineerde->cel_id)
             ->orderBy('cel_nummer')
             ->get();
+        $alleZaken = Zaak::all();
 
-        return view('gedetineerden.edit', compact('gedetineerde', 'cellen'));
+        return view('gedetineerden.edit', compact('gedetineerde', 'cellen', 'alleZaken'));
     }
 
     /** Update the specified resource in storage. */
-    public function update(Request $request, Gedetineerde $gedetineerden)
+public function update(Request $request, Gedetineerde $gedetineerden)
     {
         $data = $request->validate([
             'bsn_nummer' => 'required|string',
@@ -110,15 +119,14 @@ class GedetineerdeController extends Controller
             'datum_schorsing' => 'nullable|date',
             'cel_id' => 'nullable|exists:cellen,id',
             'opmerkingen' => 'nullable|string',
+            'zaken' => 'nullable|array',
+            'zaken.*' => 'exists:zaken,id',
         ]);
 
-        // Handle cell status changes
         $oldCelId = $gedetineerden->cel_id;
         $newCelId = $data['cel_id'] ?? null;
 
-        // If cell assignment changed
         if ($oldCelId !== $newCelId) {
-            // Release old cell if it's empty
             if ($oldCelId) {
                 $oldCel = Cel::find($oldCelId);
                 /** @var \App\Models\Cel $oldCel */
@@ -127,7 +135,6 @@ class GedetineerdeController extends Controller
                 }
             }
 
-            // Mark new cell as occupied
             if ($newCelId) {
                 $newCel = Cel::find($newCelId);
                 if ($newCel) {
@@ -138,6 +145,7 @@ class GedetineerdeController extends Controller
         }
 
         $gedetineerden->update($data);
+        $gedetineerden->zaken()->sync($request->zaken ?? []);
 
         return redirect()->route('gedetineerden.index')->with('success', 'Wijzigingen opgeslagen.');
     }

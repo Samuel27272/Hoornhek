@@ -182,4 +182,29 @@
             <textarea name="opmerkingen">{{ old('opmerkingen', $gedetineerde->opmerkingen ?? '') }}</textarea>
         </div>
     </div>
+
+    <div class="form-section">
+        <span class="form-section-title">Zaken</span>
+
+        @if(isset($alleZaken) && $alleZaken->isNotEmpty())
+            <div class="form-group">
+                @foreach($alleZaken as $zaak)
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <input
+                            type="checkbox"
+                            name="zaken[]"
+                            value="{{ $zaak->id }}"
+                            id="zaak_{{ $zaak->id }}"
+                            {{ isset($gedetineerde) && $gedetineerde->zaken->contains($zaak->id) ? 'checked' : '' }}
+                        >
+                        <label for="zaak_{{ $zaak->id }}" style="margin-bottom: 0; font-weight: 400;">
+                            {{ $zaak->zaaknummer }} — {{ $zaak->omschrijving }}
+                        </label>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <p style="font-size: 13px; color: #6b7280;">Geen zaken beschikbaar.</p>
+        @endif
+    </div>
 </div>
