@@ -104,6 +104,94 @@
     @endif
 </div>
 
+<h3 style="margin: 24px 0 12px 0; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #374151;">Documenten</h3>
+
+{{-- Bestaande documenten --}}
+<div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; border-radius:3px; margin-bottom:16px;">
+    @if($gedetineerde->documenten->isEmpty())
+        <p style="font-size:13px; color:#6b7280; margin:0;">Geen documenten geüpload.</p>
+    @else
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead>
+                <tr style="border-bottom:1px solid #ddd;">
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Bestandsnaam</th>
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Type</th>
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Omschrijving</th>
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Geüpload door</th>
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Datum</th>
+                    <th style="text-align:left; padding:6px 8px; font-weight:600;">Actie</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($gedetineerde->documenten as $document)
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="padding:6px 8px;">
+                        <a href="{{ Storage::url($document->bestand_pad) }}" target="_blank">{{ $document->bestandsnaam }}</a>
+                    </td>
+                    <td style="padding:6px 8px;">{{ ucfirst(str_replace('_', ' ', $document->type)) }}</td>
+                    <td style="padding:6px 8px;">{{ $document->omschrijving ?? '—' }}</td>
+                    <td style="padding:6px 8px;">{{ $document->geuploadDoor->name ?? '—' }}</td>
+                    <td style="padding:6px 8px;">{{ $document->created_at->format('d-m-Y H:i') }}</td>
+                    <td style="padding:6px 8px;">
+                        @if(in_array(auth()->user()->rol, ['bewaker', 'developer']) || (auth()->user()->rol === 'maatschappelijk_werker' && $document->type === 'gespreksverslag'))
+                            <form action="{{ route('gedetineerden.documenten.destroy', [$gedetineerde, $document]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick="return confirm('Verwijderen?')" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer; font-size:12px;">Verwijder</button>
+                            </form>
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
+
+{{-- Upload formulier --}}
+<div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; border-radius:3px; margin-bottom:16px;">
+    <span style="font-size:13px; font-weight:700; display:block; margin-bottom:12px;">Document uploaden</span>
+    @if($errors->any())
+        <div style="background:#fee2e2; border:1px solid #fca5a5; border-radius:3px; padding:10px 12px; margin-bottom:12px;">
+            @foreach($errors->all() as $error)
+                <p style="font-size:13px; color:#dc2626; margin:0;">{{ $error }}</p>
+            @endforeach
+        </div>
+    @endif
+    <form action="{{ route('gedetineerden.documenten.store', $gedetineerde) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+
+        <div style="margin-bottom:12px;">
+            <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Type</label>
+            <select name="type" style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:13px; width:100%; cursor:pointer;">
+                @if(in_array(auth()->user()->rol, ['maatschappelijk_werker', 'bewaker', 'developer']))
+                    <option value="gespreksverslag">Gespreksverslag</option>
+                @endif
+                @if(in_array(auth()->user()->rol, ['bewaker', 'developer']))
+                    <option value="bewijs_document">Bewijs document</option>
+                    <option value="bewijs_foto">Bewijs foto</option>
+                    <option value="bewijs_video">Bewijs video</option>
+                    <option value="overig">Overig</option>
+                @endif
+            </select>
+        </div>
+
+        <div style="margin-bottom:12px;">
+            <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Bestand</label>
+            <label for="bestand" style="display:inline-block; padding:6px 12px; background:#6c757d; color:white; border-radius:3px; cursor:pointer; font-size:13px;">Bestand kiezen</label>
+            <input type="file" name="bestand" id="bestand" style="display:none;" required onchange="document.getElementById('bestandsnaam').textContent = this.files[0]?.name ?? 'Geen bestand gekozen'">
+            <span id="bestandsnaam" style="font-size:13px; color:#6b7280; margin-left:8px;">Geen bestand gekozen</span>
+        </div>
+
+        <div style="margin-bottom:12px;">
+            <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Omschrijving</label>
+            <textarea name="omschrijving" style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:13px; width:100%; min-height:80px; resize:vertical;"></textarea>
+        </div>
+
+        <button type="submit" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px;">Uploaden</button>
+    </form>
+</div>
+
 @if(in_array(auth()->user()->rol, ['bewaker', 'developer']))
     <div style="display:flex; gap:8px; justify-content:center;">
         <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $gedetineerde->id]) }}" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-block;">Bewerk</a>

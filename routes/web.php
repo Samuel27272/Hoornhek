@@ -21,6 +21,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'destroy'])->name('gedetineerden.destroy')->middleware('rol:bewaker,developer');
     Route::get('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'show'])->name('gedetineerden.show')->middleware('rol:maatschappelijk_werker,bewaker,developer');
 
+    Route::post('/gedetineerden/{gedetineerde}/documenten', [GedetineerdeController::class, 'uploadDocument'])->name('gedetineerden.documenten.store')->middleware('rol:maatschappelijk_werker,bewaker,developer');
+    Route::delete('/gedetineerden/{gedetineerde}/documenten/{document}', [GedetineerdeController::class, 'verwijderDocument'])->name('gedetineerden.documenten.destroy')->middleware('rol:maatschappelijk_werker,bewaker,developer');
+
     // Cellen — alleen bewaker en developer
     Route::middleware('rol:bewaker,developer')->group(function () {
         Route::resource('cellen', CelController::class);

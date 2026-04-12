@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Historie;
 use App\Models\Zaak;
@@ -104,7 +106,7 @@ class GedetineerdeController extends Controller
     }
 
     /** Update the specified resource in storage. */
-public function update(Request $request, Gedetineerde $gedetineerden)
+    public function update(Request $request, Gedetineerde $gedetineerden)
     {
         $data = $request->validate([
             'bsn_nummer' => 'required|string',
@@ -184,5 +186,43 @@ public function update(Request $request, Gedetineerde $gedetineerden)
         }
 
         return redirect()->route('gedetineerden.index')->with('success', 'Gedetineerde verwijderd.');
+    }
+
+    public function uploadDocument(Request $request, Gedetineerde $gedetineerde)
+    {
+        $request->validate([
+            'bestand'     => 'required|file|max:51200',
+            'type'        => 'required|in:bewijs_document,bewijs_foto,bewijs_video,gespreksverslag,overig',
+            'omschrijving' => 'nullable|string',
+        ]);
+
+        $bestand = $request->file('bestand');
+        $pad = $bestand->store('documenten/' . $gedetineerde->id, 'public');
+
+        Document::create([
+            'gedetineerde_id' => $gedetineerde->id,
+            'geupload_door'   => Auth::user()->id,
+            'bestandsnaam'    => $bestand->getClientOriginalName(),
+            'bestand_pad'     => $pad,
+            'mime_type'       => $bestand->getMimeType(),
+            'type'            => $request->type,
+            'omschrijving'    => $request->omschrijving,
+        ]);
+
+        return back()->with('success', 'Document geüpload.');
+    }
+
+    public function verwijderDocument(Gedetineerde $gedetineerde, Document $document)
+    {
+        $rol = Auth::user()->rol;
+
+        if ($rol === 'maatschappelijk_werker' && $document->type !== 'gespreksverslag') {
+            abort(403, 'Geen toegang.');
+        }
+
+        Storage::disk('public')->delete($document->bestand_pad);
+        $document->delete();
+
+        return back()->with('success', 'Document verwijderd.');
     }
 }
