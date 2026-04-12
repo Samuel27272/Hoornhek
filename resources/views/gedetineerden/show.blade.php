@@ -105,7 +105,7 @@
 </div>
 
 @if(in_array(auth()->user()->rol, ['bewaker', 'developer']))
-    <div style="display:flex; gap:8px;">
+    <div style="display:flex; gap:8px; justify-content:center;">
         <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $gedetineerde->id]) }}" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-block;">Bewerk</a>
         <form action="{{ route('gedetineerden.destroy', ['gedetineerden' => $gedetineerde->id]) }}" method="POST" style="display:inline;">
             @csrf

@@ -27,7 +27,7 @@
     </dl>
 </div>
 
-<div style="display:flex; gap:8px;">
+<div style="display:flex; gap:8px; justify-content:center;">
     <a href="{{ route('cellen.edit', ['cellen' => $cel->id]) }}" style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-block;">Bewerk</a>
     <form action="{{ route('cellen.destroy', ['cellen' => $cel->id]) }}" method="POST" style="display:inline;">
         @csrf

@@ -6,7 +6,10 @@
     <form method="GET" action="{{ route('gedetineerden.index') }}" style="display:flex; gap:6px; align-items:center;">
         <input name="q" placeholder="Zoeken..." value="{{ $q ?? '' }}" style="padding:4px 8px; width:120px; border:1px solid #ccc; border-radius:3px; font-size:13px;">
         <button type="submit" style="background:none; border:1px solid #ccc; width:20px; height:24px; cursor:pointer; border-radius:3px; padding:0;">×</button>
-        <a href="{{ route('gedetineerden.create') }}" style="background:none; border:1px solid #ccc; width:20px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:3px; text-decoration:none; color:#111; font-weight:bold;">+</a>
+
+        @if(in_array(auth()->user()->rol, ['bewaker', 'developer']))
+            <a href="{{ route('gedetineerden.create') }}" style="background:none; border:1px solid #ccc; width:20px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:3px; text-decoration:none; color:#111; font-weight:bold;">+</a>
+        @endif
     </form>
 </div>
 

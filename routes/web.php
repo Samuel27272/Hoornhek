@@ -13,14 +13,13 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
-    // Gedetineerden — maatschappelijk medewerker mag alleen index en show
-    Route::middleware('rol:maatschappelijk_werker,bewaker,developer')->group(function () {
-        Route::resource('gedetineerden', GedetineerdeController::class)->only(['index', 'show']);
-    });
-
-    Route::middleware('rol:bewaker,developer')->group(function () {
-        Route::resource('gedetineerden', GedetineerdeController::class)->except(['index', 'show']);
-    });
+    Route::get('/gedetineerden', [GedetineerdeController::class, 'index'])->name('gedetineerden.index')->middleware('rol:maatschappelijk_werker,bewaker,developer');
+    Route::get('/gedetineerden/create', [GedetineerdeController::class, 'create'])->name('gedetineerden.create')->middleware('rol:bewaker,developer');
+    Route::post('/gedetineerden', [GedetineerdeController::class, 'store'])->name('gedetineerden.store')->middleware('rol:bewaker,developer');
+    Route::get('/gedetineerden/{gedetineerden}/edit', [GedetineerdeController::class, 'edit'])->name('gedetineerden.edit')->middleware('rol:bewaker,developer');
+    Route::put('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'update'])->name('gedetineerden.update')->middleware('rol:bewaker,developer');
+    Route::delete('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'destroy'])->name('gedetineerden.destroy')->middleware('rol:bewaker,developer');
+    Route::get('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'show'])->name('gedetineerden.show')->middleware('rol:maatschappelijk_werker,bewaker,developer');
 
     // Cellen — alleen bewaker en developer
     Route::middleware('rol:bewaker,developer')->group(function () {
@@ -38,4 +37,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
