@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Zaak;
 use Illuminate\Http\Request;
 
-
 class ZaakController extends Controller
 {
     /** Display a listing of the resource. */

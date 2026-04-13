@@ -25,7 +25,6 @@ class GedetineerdeFactory extends Factory
             'achternaam' => $last,
             'geboortedatum' => $this->faker->date('Y-m-d', '-18 years'),
             'straatnaam' => $this->faker->streetName(),
-            // huisnummer should be numbers only
             'huisnummer' => (string) $this->faker->numberBetween(1, 300),
             'postcode' => $this->faker->postcode(),
             'woonplaats' => $this->faker->city(),

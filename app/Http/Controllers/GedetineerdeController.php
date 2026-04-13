@@ -64,6 +64,7 @@ class GedetineerdeController extends Controller
             'opmerkingen' => 'nullable|string',
             'zaken' => 'nullable|array',
             'zaken.*' => 'exists:zaken,id',
+            'foto_pad' => 'nullable|image|max:5120',
         ]);
 
         if ($data['cel_id'] ?? null) {
@@ -72,6 +73,10 @@ class GedetineerdeController extends Controller
                 /** @var \App\Models\Cel $cel */
                 $cel->update(['status' => 'bezet']);
             }
+        }
+
+        if ($request->hasFile('foto_pad')) {
+            $data['foto_pad'] = $request->file('foto_pad')->store('fotos', 'public');
         }
 
         $gedetineerde = Gedetineerde::create($data);
@@ -125,6 +130,7 @@ class GedetineerdeController extends Controller
             'opmerkingen' => 'nullable|string',
             'zaken' => 'nullable|array',
             'zaken.*' => 'exists:zaken,id',
+            'foto_pad' => 'nullable|image|max:5120',
         ]);
 
         $oldCelId = $gedetineerden->cel_id;
@@ -161,6 +167,20 @@ class GedetineerdeController extends Controller
                 'type'            => 'overplaatsing',
                 'datum'           => now(),
             ]);
+        }
+
+        if ($request->hasFile('foto_pad')) {
+            if ($gedetineerden->foto_pad) {
+                Storage::disk('public')->delete($gedetineerden->foto_pad);
+            }
+            $data['foto_pad'] = $request->file('foto_pad')->store('fotos', 'public');
+        } elseif ($request->boolean('foto_verwijderen')) {
+            if ($gedetineerden->foto_pad) {
+                Storage::disk('public')->delete($gedetineerden->foto_pad);
+            }
+            $data['foto_pad'] = null;
+        } else {
+            unset($data['foto_pad']);
         }
 
         $gedetineerden->update($data);

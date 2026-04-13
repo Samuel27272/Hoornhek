@@ -27,17 +27,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/gedetineerden/{gedetineerden}/ontslaan', [GedetineerdeController::class, 'ontslaan'])->name('gedetineerden.ontslaan')->middleware('rol:bewaker,developer');
     Route::patch('/gedetineerden/{gedetineerden}/herplaatsen', [GedetineerdeController::class, 'herplaatsen'])->name('gedetineerden.herplaatsen')->middleware('rol:bewaker,developer');
 
-    // Cellen — alleen bewaker en developer
     Route::middleware('rol:bewaker,developer')->group(function () {
         Route::resource('cellen', CelController::class);
     });
 
-    // Zaken — alleen bewaker en developer
     Route::middleware('rol:bewaker,developer')->group(function () {
         Route::resource('zaken', ZaakController::class);
     });
 
-    // Bezoekers — portier, bewaker en developer
     Route::middleware('rol:portier,bewaker,developer')->group(function () {
         Route::resource('bezoekers', BezoekerController::class);
     });

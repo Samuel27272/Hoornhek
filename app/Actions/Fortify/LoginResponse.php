@@ -16,7 +16,7 @@ class LoginResponse implements LoginResponseContract
 
         $rol = $request->user()->rol ?? null;
 
-        $redirect = match($rol) {
+        $redirect = match ($rol) {
             'portier'                    => route('bezoekers.index'),
             'maatschappelijk_werker' => route('gedetineerden.index'),
             'bewaker'                    => route('gedetineerden.index'),
