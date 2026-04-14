@@ -25,7 +25,8 @@ class GedetineerdeController extends Controller
                     ->orWhere('achternaam', 'like', "%{$q}%")
                     ->orWhere('bsn_nummer', 'like', "%{$q}%")
                     ->orWhere('straatnaam', 'like', "%{$q}%")
-                    ->orWhere('huisnummer', 'like', "%{$q}%");
+                    ->orWhere('huisnummer', 'like', "%{$q}%")
+                    ->orWhere('status', 'like', "{$q}%");
             });
         }
 
@@ -196,7 +197,6 @@ class GedetineerdeController extends Controller
 
         $gedetineerden->delete();
 
-        // Release cell if it becomes empty
         if ($celId) {
             $cel = Cel::find($celId);
             /** @var \App\Models\Cel $cel */

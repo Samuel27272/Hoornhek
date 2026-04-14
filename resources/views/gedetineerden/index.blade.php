@@ -30,6 +30,7 @@
                 <th style="width:12%;">Geboortedatum</th>
                 <th style="width:30%;">Adres</th>
                 <th style="width:10%;">Cel nummer</th>
+                <th style="width:10%;">status</th>
                 <th style="width:18%;"></th>
             </tr>
         </thead>
@@ -41,6 +42,13 @@
                     <td>{{ $g->geboortedatum ? $g->geboortedatum->format('d-m-Y') : '' }}</td>
                     <td>{{ $g->straatnaam }} {{ $g->huisnummer }}</td>
                     <td>{{ optional($g->cel)->cel_nummer }}</td>
+                    <td>
+                        <span
+                            style="padding:3px 6px; border-radius:3px; font-size:12px; font-weight:bold;
+                            {{ $g->status === 'actief' ? 'background:#e8f5e9; color:#0a7d0a;' : 'background:#ffebee; color:#c62828;' }}">
+                            {{ ucfirst($g->status) }}
+                        </span>
+                    </td>
                     <td class="hs-actions-cell">
                         <a href="{{ route('gedetineerden.show', ['gedetineerden' => $g->id]) }}" class="hs-icon-btn"
                             title="Bekijk">👁</a>
