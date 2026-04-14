@@ -9,7 +9,7 @@ class Gedetineerde extends Model
 {
     use HasFactory;
     /**
-     * Explicit table name (Dutch pluralization differs from Eloquent's guess)
+     * Table name matches migration
      *
      * @var string
      */

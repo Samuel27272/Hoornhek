@@ -46,7 +46,6 @@ class ZaakController extends Controller
             'opmerkingen' => 'nullable|string',
         ]);
 
-        // Auto-fill creation metadata
         $data['datum_aangemaakt'] = now()->toDateString();
         $data['aangemaakt_door'] = Auth::id();
 
@@ -80,7 +79,6 @@ class ZaakController extends Controller
             'opmerkingen' => 'nullable|string',
         ]);
 
-        // Auto-fill datum_gesloten when status changes to 'gesloten'
         if ($data['status'] === 'gesloten' && $zaken->status !== 'gesloten') {
             $data['datum_gesloten'] = now()->toDateString();
         }

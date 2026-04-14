@@ -119,13 +119,13 @@ class GedetineerdeController extends Controller
             'voornaam' => 'required|string',
             'achternaam' => 'required|string',
             'geboortedatum' => 'required|date',
-            'straatnaam' => 'nullable|string',
-            'huisnummer' => 'nullable|numeric',
-            'postcode' => 'nullable|string',
-            'woonplaats' => 'nullable|string',
+            'straatnaam' => 'required|string',
+            'huisnummer' => 'required|numeric',
+            'postcode' => 'required|string',
+            'woonplaats' => 'required|string',
             'telefoonnummer' => 'nullable|string',
             'email' => 'nullable|email',
-            'aanhoudingsdatum' => 'nullable|date',
+            'aanhoudingsdatum' => 'required|date',
             'datum_schorsing' => 'nullable|date',
             'cel_id' => 'nullable|exists:cellen,id',
             'opmerkingen' => 'nullable|string',
@@ -137,6 +137,7 @@ class GedetineerdeController extends Controller
         $oldCelId = $gedetineerden->cel_id;
         $newCelId = $data['cel_id'] ?? null;
 
+        /** Als cel leeg is, op beschikbaar zetten */
         if ($oldCelId !== $newCelId) {
             if ($oldCelId) {
                 $oldCel = Cel::find($oldCelId);
@@ -197,6 +198,7 @@ class GedetineerdeController extends Controller
 
         $gedetineerden->delete();
 
+        /** bij verwijderen van gedetineerde cel op beschikbaar zetten */
         if ($celId) {
             $cel = Cel::find($celId);
             /** @var \App\Models\Cel $cel */
@@ -208,6 +210,7 @@ class GedetineerdeController extends Controller
         return redirect()->route('gedetineerden.index')->with('success', 'Gedetineerde verwijderd.');
     }
 
+    /** Upload Document*/
     public function uploadDocument(Request $request, Gedetineerde $gedetineerde)
     {
         $request->validate([
@@ -232,6 +235,7 @@ class GedetineerdeController extends Controller
         return back()->with('success', 'Document geüpload.');
     }
 
+    /** Verwijder Document */
     public function verwijderDocument(Gedetineerde $gedetineerde, Document $document)
     {
         $rol = Auth::user()->rol;
@@ -246,6 +250,7 @@ class GedetineerdeController extends Controller
         return back()->with('success', 'Document verwijderd.');
     }
 
+    /** Ontsla Gedetineerde */
     public function ontslaan(Gedetineerde $gedetineerden)
     {
         if ($gedetineerden->cel_id) {
@@ -275,6 +280,7 @@ class GedetineerdeController extends Controller
         return back()->with('success', 'Gedetineerde ontslagen.');
     }
 
+    /** Heractiveer gedetineerde */
     public function herplaatsen(Gedetineerde $gedetineerden)
     {
         $gedetineerden->update([

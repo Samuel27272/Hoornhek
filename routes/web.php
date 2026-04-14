@@ -13,6 +13,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
+    /** Gedetineerden routes */
     Route::get('/gedetineerden', [GedetineerdeController::class, 'index'])->name('gedetineerden.index')->middleware('rol:maatschappelijk_werker,bewaker,developer');
     Route::get('/gedetineerden/create', [GedetineerdeController::class, 'create'])->name('gedetineerden.create')->middleware('rol:bewaker,developer');
     Route::post('/gedetineerden', [GedetineerdeController::class, 'store'])->name('gedetineerden.store')->middleware('rol:bewaker,developer');
@@ -27,14 +28,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/gedetineerden/{gedetineerden}/ontslaan', [GedetineerdeController::class, 'ontslaan'])->name('gedetineerden.ontslaan')->middleware('rol:bewaker,developer');
     Route::patch('/gedetineerden/{gedetineerden}/herplaatsen', [GedetineerdeController::class, 'herplaatsen'])->name('gedetineerden.herplaatsen')->middleware('rol:bewaker,developer');
 
-    Route::middleware('rol:bewaker,developer')->group(function () {
-        Route::resource('cellen', CelController::class);
-    });
-
+    /** Zaken routes */
     Route::middleware('rol:bewaker,developer')->group(function () {
         Route::resource('zaken', ZaakController::class);
     });
 
+    /** Cellen routes */
+    Route::middleware('rol:bewaker,developer')->group(function () {
+        Route::resource('cellen', CelController::class);
+    });
+
+    /** Bezoekers routes */
     Route::middleware('rol:portier,bewaker,developer')->group(function () {
         Route::resource('bezoekers', BezoekerController::class);
     });
