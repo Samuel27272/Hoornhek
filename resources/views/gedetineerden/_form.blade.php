@@ -23,7 +23,8 @@
                 style="display:inline-block; padding:6px 12px; background:#6c757d; color:white; border-radius:3px; cursor:pointer; font-size:13px;">
                 {{ isset($gedetineerde) && $gedetineerde->foto_pad ? 'Foto wijzigen' : 'Foto kiezen' }}
             </label>
-            <input type="file" name="foto_pad" id="foto_pad" accept="image/*" style="display:none;"
+            <input type="file" name="foto_pad" id="foto_pad" accept="image/*,.jpg,.jpeg,.png,.webp"
+                style="display:none;"
                 onchange="document.getElementById('foto_naam').textContent = this.files[0]?.name ?? 'Geen foto gekozen'">
             <span id="foto_naam" style="font-size:13px; color:#6b7280; margin-left:8px;">Geen foto gekozen</span>
         </div>
@@ -35,19 +36,23 @@
         <div class="form-group">
             <label>BSN-nummer</label>
             <input type="text" name="bsn_nummer" value="{{ old('bsn_nummer', $gedetineerde->bsn_nummer ?? '') }}"
-                required>
+                required maxlength="9" inputmode="numeric" autocomplete="off" pattern="[0-9]{9}"
+                title="BSN moet uit 9 cijfers bestaan.">
+            @error('bsn_nummer')
+                <div style="margin-top:6px; font-size:13px; color:#d32f2f;">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="form-group-row">
             <div class="form-group">
                 <label>Voornaam</label>
                 <input type="text" name="voornaam" value="{{ old('voornaam', $gedetineerde->voornaam ?? '') }}"
-                    required>
+                    required maxlength="255" autocomplete="given-name">
             </div>
             <div class="form-group">
                 <label>Achternaam</label>
                 <input type="text" name="achternaam" value="{{ old('achternaam', $gedetineerde->achternaam ?? '') }}"
-                    required>
+                    required maxlength="255" autocomplete="family-name">
             </div>
         </div>
 
@@ -55,7 +60,7 @@
             <label>Geboortedatum</label>
             <input type="date" name="geboortedatum"
                 value="{{ old('geboortedatum', isset($gedetineerde) && $gedetineerde->geboortedatum ? $gedetineerde->geboortedatum->format('Y-m-d') : '') }}"
-                required>
+                required max="{{ now()->format('Y-m-d') }}">
         </div>
     </div>
 
@@ -66,12 +71,14 @@
             <div class="form-group">
                 <label>Straatnaam</label>
                 <input type="text" name="straatnaam" value="{{ old('straatnaam', $gedetineerde->straatnaam ?? '') }}"
-                    required>
+                    @if (isset($gedetineerde) && $gedetineerde->exists) required @endif maxlength="255" autocomplete="address-line1">
             </div>
             <div class="form-group">
                 <label>Huisnummer</label>
-                <input type="text" name="huisnummer" value="{{ old('huisnummer', $gedetineerde->huisnummer ?? '') }}"
-                    required>
+                <input type="number" name="huisnummer"
+                    value="{{ old('huisnummer', $gedetineerde->huisnummer ?? '') }}"
+                    @if (isset($gedetineerde) && $gedetineerde->exists) required @endif min="1" max="99999" step="1"
+                    inputmode="numeric">
             </div>
         </div>
 
@@ -79,12 +86,14 @@
             <div class="form-group">
                 <label>Postcode</label>
                 <input type="text" name="postcode" value="{{ old('postcode', $gedetineerde->postcode ?? '') }}"
-                    required>
+                    @if (isset($gedetineerde) && $gedetineerde->exists) required @endif maxlength="7" autocomplete="postal-code"
+                    pattern="[1-9][0-9]{3}\s?[A-Za-z]{2}" title="Gebruik het formaat 1234 AB.">
             </div>
             <div class="form-group">
                 <label>Woonplaats</label>
                 <input type="text" name="woonplaats"
-                    value="{{ old('woonplaats', $gedetineerde->woonplaats ?? '') }}" required>
+                    value="{{ old('woonplaats', $gedetineerde->woonplaats ?? '') }}"
+                    @if (isset($gedetineerde) && $gedetineerde->exists) required @endif maxlength="255" autocomplete="address-level2">
             </div>
         </div>
     </div>
@@ -95,12 +104,15 @@
         <div class="form-group-row">
             <div class="form-group">
                 <label>Telefoonnummer</label>
-                <input type="text" name="telefoonnummer"
-                    value="{{ old('telefoonnummer', $gedetineerde->telefoonnummer ?? '') }}">
+                <input type="tel" name="telefoonnummer"
+                    value="{{ old('telefoonnummer', $gedetineerde->telefoonnummer ?? '') }}" maxlength="20"
+                    autocomplete="tel" inputmode="tel" pattern="[0-9+\-\s()]{6,20}"
+                    title="Gebruik alleen cijfers, spaties en + - ( ).">
             </div>
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" name="email" value="{{ old('email', $gedetineerde->email ?? '') }}">
+                <input type="email" name="email" value="{{ old('email', $gedetineerde->email ?? '') }}"
+                    maxlength="255" autocomplete="email">
             </div>
         </div>
     </div>
@@ -113,7 +125,7 @@
                 <label>Aanhoudingsdatum</label>
                 <input type="date" name="aanhoudingsdatum"
                     value="{{ old('aanhoudingsdatum', isset($gedetineerde) && $gedetineerde->aanhoudingsdatum ? $gedetineerde->aanhoudingsdatum->format('Y-m-d') : '') }}"
-                    required>
+                    required max="{{ now()->format('Y-m-d') }}">
             </div>
             <div class="form-group">
                 <label>Datum schorsing</label>
@@ -139,7 +151,7 @@
 
         <div class="form-group">
             <label>Opmerkingen</label>
-            <textarea name="opmerkingen">{{ old('opmerkingen', $gedetineerde->opmerkingen ?? '') }}</textarea>
+            <textarea name="opmerkingen" maxlength="2000">{{ old('opmerkingen', $gedetineerde->opmerkingen ?? '') }}</textarea>
         </div>
     </div>
 

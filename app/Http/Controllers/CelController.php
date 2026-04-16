@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cel;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class CelController extends Controller
@@ -36,16 +37,22 @@ class CelController extends Controller
     /** Store a newly created resource in storage. */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'cel_nummer' => 'required|string',
-            'capaciteit' => 'required|integer|min:1',
-            'status' => 'required|in:beschikbaar,bezet,buiten_gebruik',
-            'opmerkingen' => 'nullable|string',
-        ]);
+        try {
+            $data = $request->validate([
+                'cel_nummer' => 'required|string|max:20|regex:/^[A-Za-z0-9\-]+$/',
+                'capaciteit' => 'required|integer|min:1|max:999',
+                'status' => 'required|in:beschikbaar,bezet,buiten_gebruik',
+                'opmerkingen' => 'nullable|string|max:2000',
+            ]);
 
-        Cel::create($data);
+            Cel::create($data);
 
-        return redirect()->route('cellen.index')->with('success', 'Cel aangemaakt.');
+            return redirect()->route('cellen.index')->with('success', 'Cel aangemaakt.');
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return $this->databaseError($request);
+        }
     }
 
     /** Display the specified resource. */
@@ -65,16 +72,22 @@ class CelController extends Controller
     /** Update the specified resource in storage. */
     public function update(Request $request, Cel $cellen)
     {
-        $data = $request->validate([
-            'cel_nummer' => 'required|string',
-            'capaciteit' => 'required|integer|min:1',
-            'status' => 'required|in:beschikbaar,bezet,buiten_gebruik',
-            'opmerkingen' => 'nullable|string',
-        ]);
+        try {
+            $data = $request->validate([
+                'cel_nummer' => 'required|string|max:20|regex:/^[A-Za-z0-9\-]+$/',
+                'capaciteit' => 'required|integer|min:1|max:999',
+                'status' => 'required|in:beschikbaar,bezet,buiten_gebruik',
+                'opmerkingen' => 'nullable|string|max:2000',
+            ]);
 
-        $cellen->update($data);
+            $cellen->update($data);
 
-        return redirect()->route('cellen.index')->with('success', 'Wijzigingen opgeslagen.');
+            return redirect()->route('cellen.index')->with('success', 'Wijzigingen opgeslagen.');
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return $this->databaseError($request);
+        }
     }
 
     /** Remove the specified resource from storage. */

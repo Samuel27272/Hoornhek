@@ -8,7 +8,9 @@
 
         <div class="form-group">
             <label>Zaak nummer</label>
-            <input type="text" name="zaaknummer" value="{{ old('zaaknummer', $zaak->zaaknummer ?? '') }}" required>
+            <input type="text" name="zaaknummer" value="{{ old('zaaknummer', $zaak->zaaknummer ?? '') }}" required
+                maxlength="30" autocomplete="off" pattern="[A-Za-z0-9\-]+"
+                title="Gebruik alleen letters, cijfers en koppeltekens.">
         </div>
 
         <div class="form-group">
@@ -23,12 +25,13 @@
 
         <div class="form-group">
             <label>Omschrijving</label>
-            <textarea name="omschrijving" required>{{ old('omschrijving', $zaak->omschrijving ?? '') }}</textarea>
+            <textarea name="omschrijving" required maxlength="5000">{{ old('omschrijving', $zaak->omschrijving ?? '') }}</textarea>
         </div>
 
         <div class="form-group">
             <label>Misdaad type</label>
-            <input type="text" name="misdaad_type" value="{{ old('misdaad_type', $zaak->misdaad_type ?? '') }}">
+            <input type="text" name="misdaad_type" value="{{ old('misdaad_type', $zaak->misdaad_type ?? '') }}"
+                maxlength="100" autocomplete="off">
         </div>
     </div>
 
@@ -59,7 +62,7 @@
 
         <div class="form-group">
             <label>Opmerkingen</label>
-            <textarea name="opmerkingen">{{ old('opmerkingen', $zaak->opmerkingen ?? '') }}</textarea>
+            <textarea name="opmerkingen" maxlength="2000">{{ old('opmerkingen', $zaak->opmerkingen ?? '') }}</textarea>
         </div>
     </div>
 </div>

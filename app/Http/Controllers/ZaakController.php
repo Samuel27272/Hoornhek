@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Models\Zaak;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ZaakController extends Controller
 {
@@ -38,20 +39,26 @@ class ZaakController extends Controller
     /** Store a newly created resource in storage. */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'zaaknummer' => 'required|string',
-            'omschrijving' => 'required|string',
-            'misdaad_type' => 'nullable|string',
-            'status' => 'required|in:open,gesloten,in_behandeling',
-            'opmerkingen' => 'nullable|string',
-        ]);
+        try {
+            $data = $request->validate([
+                'zaaknummer' => 'required|string|max:30|regex:/^[A-Za-z0-9\-]+$/',
+                'omschrijving' => 'required|string|max:5000',
+                'misdaad_type' => 'nullable|string|max:100',
+                'status' => 'required|in:open,gesloten,in_behandeling',
+                'opmerkingen' => 'nullable|string|max:2000',
+            ]);
 
-        $data['datum_aangemaakt'] = now()->toDateString();
-        $data['aangemaakt_door'] = Auth::id();
+            $data['datum_aangemaakt'] = now()->toDateString();
+            $data['aangemaakt_door'] = Auth::id();
 
-        Zaak::create($data);
+            Zaak::create($data);
 
-        return redirect()->route('zaken.index')->with('success', 'Zaak aangemaakt.');
+            return redirect()->route('zaken.index')->with('success', 'Zaak aangemaakt.');
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return $this->databaseError($request);
+        }
     }
 
     /** Display the specified resource. */
@@ -71,21 +78,27 @@ class ZaakController extends Controller
     /** Update the specified resource in storage. */
     public function update(Request $request, Zaak $zaken)
     {
-        $data = $request->validate([
-            'zaaknummer' => 'required|string',
-            'omschrijving' => 'required|string',
-            'misdaad_type' => 'nullable|string',
-            'status' => 'required|in:open,gesloten,in_behandeling',
-            'opmerkingen' => 'nullable|string',
-        ]);
+        try {
+            $data = $request->validate([
+                'zaaknummer' => 'required|string|max:30|regex:/^[A-Za-z0-9\-]+$/',
+                'omschrijving' => 'required|string|max:5000',
+                'misdaad_type' => 'nullable|string|max:100',
+                'status' => 'required|in:open,gesloten,in_behandeling',
+                'opmerkingen' => 'nullable|string|max:2000',
+            ]);
 
-        if ($data['status'] === 'gesloten' && $zaken->status !== 'gesloten') {
-            $data['datum_gesloten'] = now()->toDateString();
+            if ($data['status'] === 'gesloten' && $zaken->status !== 'gesloten') {
+                $data['datum_gesloten'] = now()->toDateString();
+            }
+
+            $zaken->update($data);
+
+            return redirect()->route('zaken.index')->with('success', 'Wijzigingen opgeslagen.');
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return $this->databaseError($request);
         }
-
-        $zaken->update($data);
-
-        return redirect()->route('zaken.index')->with('success', 'Wijzigingen opgeslagen.');
     }
 
     /** Remove the specified resource from storage. */

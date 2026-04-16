@@ -38,11 +38,13 @@
 
                     <label for="email" class="label">E-mail</label>
                     <input id="email" name="email" type="email" class="input" placeholder="E-mail"
-                        value="{{ old('email') }}" required autofocus>
+                        value="{{ old('email') }}" required autofocus maxlength="255" autocomplete="email"
+                        inputmode="email">
 
                     <label for="password" class="label">Wachtwoord</label>
                     <input id="password" name="password" type="password" class="input" placeholder="Wachtwoord"
-                        required>
+                        required autocomplete="current-password" autocapitalize="off" spellcheck="false"
+                        maxlength="255">
 
                     <button type="submit" class="btn">Inloggen</button>
                 </form>

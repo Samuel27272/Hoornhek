@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bezoeker;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class BezoekerController extends Controller
@@ -38,18 +39,24 @@ class BezoekerController extends Controller
     /** Store a newly created resource in storage. */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'voornaam' => 'required|string',
-            'achternaam' => 'required|string',
-            'telefoonnummer' => 'nullable|string',
-            'email' => 'nullable|email',
-            'start_bezoek' => 'nullable|date_format:Y-m-d\TH:i',
-            'status' => 'required|in:op_bezoek,inactief',
-        ]);
+        try {
+            $data = $request->validate([
+                'voornaam' => 'required|string|max:255',
+                'achternaam' => 'required|string|max:255',
+                'telefoonnummer' => 'nullable|string|max:20',
+                'email' => 'nullable|email|max:255',
+                'start_bezoek' => 'nullable|date_format:Y-m-d\TH:i',
+                'status' => 'required|in:op_bezoek,inactief',
+            ]);
 
-        Bezoeker::create($data);
+            Bezoeker::create($data);
 
-        return redirect()->route('bezoekers.index')->with('success', 'Bezoeker aangemaakt.');
+            return redirect()->route('bezoekers.index')->with('success', 'Bezoeker aangemaakt.');
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return $this->databaseError($request);
+        }
     }
 
     /** Display the specified resource. */
@@ -67,18 +74,24 @@ class BezoekerController extends Controller
     /** Update the specified resource in storage. */
     public function update(Request $request, Bezoeker $bezoeker)
     {
-        $data = $request->validate([
-            'voornaam' => 'required|string',
-            'achternaam' => 'required|string',
-            'telefoonnummer' => 'nullable|string',
-            'email' => 'nullable|email',
-            'start_bezoek' => 'nullable|date_format:Y-m-d\TH:i',
-            'status' => 'required|in:op_bezoek,inactief',
-        ]);
+        try {
+            $data = $request->validate([
+                'voornaam' => 'required|string|max:255',
+                'achternaam' => 'required|string|max:255',
+                'telefoonnummer' => 'nullable|string|max:20',
+                'email' => 'nullable|email|max:255',
+                'start_bezoek' => 'nullable|date_format:Y-m-d\TH:i',
+                'status' => 'required|in:op_bezoek,inactief',
+            ]);
 
-        $bezoeker->update($data);
+            $bezoeker->update($data);
 
-        return redirect()->route('bezoekers.index')->with('success', 'Wijzigingen opgeslagen.');
+            return redirect()->route('bezoekers.index')->with('success', 'Wijzigingen opgeslagen.');
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return $this->databaseError($request);
+        }
     }
 
     /** Remove the specified resource from storage. */

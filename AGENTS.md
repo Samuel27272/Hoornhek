@@ -41,6 +41,22 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
 
+## Authorization & Access Control
+
+- This application uses role-based access control via the `rol` column on the `users` table. Roles include: `maatschappelijk_werker`, `bewaker`, `portier`, `developer`.
+- Use the `rol` middleware to protect routes: `Route::middleware('rol:bewaker,developer')`. Check `app/Http/Middleware/CheckRol.php` for implementation.
+- When a user lacks the required role, the middleware logs them out and redirects to login with an error message.
+
+## Application Domain & Models
+
+- **Gedetineerde** (Detained Person): Core entity representing a detained individual with personal data, cell assignment, documents, cases, and history.
+- **Cel** (Cell): Prison cell with status tracking (beschikbaar/available, bezet/occupied).
+- **Zaak** (Case): Criminal case with many-to-many relationship to Gedetineerden.
+- **Bezoeker** (Visitor): Visitors to detained persons.
+- **Document**: Files attached to Gedetineerde records, stored in `storage/app/public`.
+- **Historie**: Audit trail of changes to Gedetineerden (ordered by date descending).
+- All models use proper relationship definitions (belongsTo, hasMany, belongsToMany). See `app/Models/` for examples.
+
 ## Verification Scripts
 
 - Do not create verification scripts or tinker when tests cover that functionality and prove they work. Unit and feature tests are more important.
@@ -54,9 +70,30 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 - If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
 
+## Views & Blade Templates
+
+- The application uses Blade templates with custom layouts. Main domain pages extend `resources/views/layouts/hekkensluiter.blade.php`, while the public landing page uses `resources/views/layouts/app-klantenportaal.blade.php`.
+- Feature-specific views are organized by domain: `gedetineerden/`, `zaken/`, `cellen/`, `bezoekers/`.
+- A small set of shared Blade components lives in `resources/views/components/` and is used by auth, settings, dashboard, and layout views, such as `app-logo`, `auth-session-status`, `desktop-user-menu`, `action-message`, and `placeholder-pattern`.
+- Use `wire:navigate` directive for Livewire navigation links to enable fast page transitions.
+
+## File Storage
+
+- Document files (e.g., photos for Gedetineerde) are stored in `storage/app/public` and accessed via routes. See `GedetineerdeController::uploadDocument` and related methods.
+- Use `Storage::store()` in `public` disk for user-accessible files (photos, documents).
+- The `public` disk is configured in `config/filesystems.php` with a public URL at `/storage`.
+
 ## Documentation Files
 
 - You must only create documentation files if explicitly requested by the user.
+
+## Controllers & Routing
+
+- Controllers implement RESTful pattern (index, create, store, show, edit, update, destroy). See `GedetineerdeController`, `ZaakController`, `CelController`, `BezoekerController` for examples.
+- Routes are defined in `routes/web.php` with role-based middleware protection applied at the route level.
+- Many-to-many relationships (e.g., Gedetineerde-Zaak) are handled with `attach()` and `sync()` in controller methods.
+- Special actions like `ontslaan` (release) and `herplaatsen` (relocate) use PATCH routes with custom controller methods.
+- Use `Request::validate()` with validation rules in the same file. Database errors (e.g., constraint violations) are caught and redirected to error view.
 
 ## Replies
 
