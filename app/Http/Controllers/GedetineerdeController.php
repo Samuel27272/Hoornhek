@@ -41,7 +41,7 @@ class GedetineerdeController extends Controller
     public function create()
     {
         $gedetineerde = new Gedetineerde;
-        $cellen = Cel::where('status', 'beschikbaar')->orderBy('cel_nummer')->get();
+        $cellen = Cel::query()->where('status', 'beschikbaar')->orderBy('cel_nummer', 'asc')->get();
         $alleZaken = Zaak::all();
 
         return view('gedetineerden.create', compact('gedetineerde', 'cellen', 'alleZaken'));
@@ -54,7 +54,7 @@ class GedetineerdeController extends Controller
             $data = $request->validate($this->gedetineerdeRules(), $this->gedetineerdeMessages());
 
             if ($data['cel_id'] ?? null) {
-                $cel = Cel::find($data['cel_id']);
+                $cel = Cel::query()->find($data['cel_id']);
                 if ($cel) {
                     /** @var Cel $cel */
                     $cel->update(['status' => 'bezet']);
@@ -92,9 +92,9 @@ class GedetineerdeController extends Controller
     {
         $gedetineerde = $gedetineerden;
         $gedetineerde->load('zaken');
-        $cellen = Cel::where('status', 'beschikbaar')
+        $cellen = Cel::query()->where('status', 'beschikbaar')
             ->orWhere('id', $gedetineerde->cel_id)
-            ->orderBy('cel_nummer')
+            ->orderBy('cel_nummer', 'asc')
             ->get();
         $alleZaken = Zaak::all();
 
@@ -111,9 +111,9 @@ class GedetineerdeController extends Controller
             $newCelId = $data['cel_id'] ?? null;
 
             /** Als cel leeg is, op beschikbaar zetten */
-            if ($oldCelId !== $newCelId) {
+            if ($oldCelId != $newCelId) {
                 if ($oldCelId) {
-                    $oldCel = Cel::find($oldCelId);
+                    $oldCel = Cel::query()->find($oldCelId);
                     /** @var Cel $oldCel */
                     if ($oldCel && $oldCel->gedetineerden()->count() === 1) {
                         $oldCel->update(['status' => 'beschikbaar']);
@@ -121,7 +121,7 @@ class GedetineerdeController extends Controller
                 }
 
                 if ($newCelId) {
-                    $newCel = Cel::find($newCelId);
+                    $newCel = Cel::query()->find($newCelId);
                     if ($newCel) {
                         /** @var Cel $newCel */
                         $newCel->update(['status' => 'bezet']);
@@ -129,9 +129,9 @@ class GedetineerdeController extends Controller
                 }
             }
 
-            if ($oldCelId !== $newCelId) {
-                $oudeCel = $oldCelId ? Cel::find($oldCelId)?->cel_nummer : '—';
-                $nieuweCel = $newCelId ? Cel::find($newCelId)?->cel_nummer : '—';
+            if ($oldCelId != $newCelId) {
+                $oudeCel = $oldCelId ? Cel::query()->find($oldCelId)?->cel_nummer : '—';
+                $nieuweCel = $newCelId ? Cel::query()->find($newCelId)?->cel_nummer : '—';
 
                 Historie::create([
                     'gedetineerde_id' => $gedetineerden->id,
@@ -174,11 +174,11 @@ class GedetineerdeController extends Controller
     {
         $celId = $gedetineerden->cel_id;
 
-        $gedetineerden->delete();
+        Gedetineerde::query()->whereKey($gedetineerden->getKey())->delete();
 
         /** bij verwijderen van gedetineerde cel op beschikbaar zetten */
         if ($celId) {
-            $cel = Cel::find($celId);
+            $cel = Cel::query()->find($celId);
             /** @var Cel $cel */
             if ($cel && $cel->gedetineerden()->count() === 0) {
                 $cel->update(['status' => 'beschikbaar']);
@@ -198,7 +198,7 @@ class GedetineerdeController extends Controller
         ]);
 
         $bestand = $request->file('bestand');
-        $pad = $bestand->store('documenten/'.$gedetineerde->id, 'public');
+        $pad = $bestand->store('documenten/' . $gedetineerde->id, 'public');
 
         Document::create([
             'gedetineerde_id' => $gedetineerde->id,
@@ -223,7 +223,7 @@ class GedetineerdeController extends Controller
         }
 
         Storage::disk('public')->delete($document->bestand_pad);
-        $document->delete();
+        Document::query()->whereKey($document->getKey())->delete();
 
         return back()->with('success', 'Document verwijderd.');
     }
@@ -232,7 +232,7 @@ class GedetineerdeController extends Controller
     public function ontslaan(Gedetineerde $gedetineerden)
     {
         if ($gedetineerden->cel_id) {
-            $cel = Cel::find($gedetineerden->cel_id);
+            $cel = Cel::query()->find($gedetineerden->cel_id);
             /** @var Cel $cel */
             if ($cel && $cel->gedetineerden()->count() === 1) {
                 $cel->update(['status' => 'beschikbaar']);

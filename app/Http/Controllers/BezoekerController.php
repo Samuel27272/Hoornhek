@@ -23,7 +23,7 @@ class BezoekerController extends Controller
             });
         }
 
-        $bezoekers = $query->orderBy('achternaam')->paginate(15)->withQueryString();
+        $bezoekers = $query->orderBy('achternaam', 'asc')->paginate(15)->withQueryString();
 
         return view('bezoekers.index', compact('bezoekers', 'q'));
     }
@@ -97,7 +97,7 @@ class BezoekerController extends Controller
     /** Remove the specified resource from storage. */
     public function destroy(Bezoeker $bezoeker)
     {
-        $bezoeker->delete();
+        Bezoeker::query()->whereKey($bezoeker->getKey())->delete();
 
         return redirect()->route('bezoekers.index')->with('success', 'Bezoeker verwijderd.');
     }

@@ -21,7 +21,7 @@ class CelController extends Controller
             });
         }
 
-        $cellen = $query->orderBy('cel_nummer')->paginate(15)->withQueryString();
+        $cellen = $query->orderBy('cel_nummer', 'asc')->paginate(15)->withQueryString();
 
         return view('cellen.index', compact('cellen', 'q'));
     }
@@ -93,7 +93,7 @@ class CelController extends Controller
     /** Remove the specified resource from storage. */
     public function destroy(Cel $cellen)
     {
-        $cellen->delete();
+        Cel::query()->whereKey($cellen->getKey())->delete();
 
         return redirect()->route('cellen.index')->with('success', 'Cel verwijderd.');
     }

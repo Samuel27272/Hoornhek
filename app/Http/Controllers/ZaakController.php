@@ -104,7 +104,7 @@ class ZaakController extends Controller
     /** Remove the specified resource from storage. */
     public function destroy(Zaak $zaken)
     {
-        $zaken->delete();
+        Zaak::query()->whereKey($zaken->getKey())->delete();
 
         return redirect()->route('zaken.index')->with('success', 'Zaak verwijderd.');
     }
