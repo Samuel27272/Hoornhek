@@ -302,7 +302,7 @@ class GedetineerdeController extends Controller
             'huisnummer' => $gedetineerde?->exists ? 'required|numeric|min:1|max:99999' : 'nullable|numeric|min:1|max:99999',
             'postcode' => $gedetineerde?->exists ? 'required|string|max:7|regex:/^[1-9][0-9]{3}\s?[A-Za-z]{2}$/' : 'nullable|string|max:7|regex:/^[1-9][0-9]{3}\s?[A-Za-z]{2}$/',
             'woonplaats' => $gedetineerde?->exists ? 'required|string|max:255' : 'nullable|string|max:255',
-            'telefoonnummer' => 'nullable|string|max:20|regex:/^[0-9+\-\s()]{6,20}$/',
+            'telefoonnummer' => 'nullable|string|max:20|regex:/^[0-9+\-\s()]{3,20}$/',
             'email' => 'nullable|email|max:255',
             'aanhoudingsdatum' => $gedetineerde?->exists ? 'required|date' : 'nullable|date',
             'datum_schorsing' => 'nullable|date',

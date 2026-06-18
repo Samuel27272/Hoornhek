@@ -9,7 +9,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.3
+- php - 8.5
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
 - laravel/prompts (PROMPTS) - v0
@@ -26,36 +26,13 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 ## Skills Activation
 
-This project has domain-specific skills available. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
-
-- `fortify-development` — ACTIVATE when the user works on authentication in Laravel. This includes login, registration, password reset, email verification, two-factor authentication (2FA/TOTP/QR codes/recovery codes), profile updates, password confirmation, or any auth-related routes and controllers. Activate when the user mentions Fortify, auth, authentication, login, register, signup, forgot password, verify email, 2FA, or references app/Actions/Fortify/, CreateNewUser, UpdateUserProfileInformation, FortifyServiceProvider, config/fortify.php, or auth guards. Fortify is the frontend-agnostic authentication backend for Laravel that registers all auth routes and controllers. Also activate when building SPA or headless authentication, customizing login redirects, overriding response contracts like LoginResponse, or configuring login throttling. Do NOT activate for Laravel Passport (OAuth2 API tokens), Socialite (OAuth social login), or non-auth Laravel features.
-- `laravel-best-practices` — Apply this skill whenever writing, reviewing, or refactoring Laravel PHP code. This includes creating or modifying controllers, models, migrations, form requests, policies, jobs, scheduled commands, service classes, and Eloquent queries. Triggers for N+1 and query performance issues, caching strategies, authorization and security patterns, validation, error handling, queue and job configuration, route definitions, and architectural decisions. Also use for Laravel code reviews and refactoring existing Laravel code to follow best practices. Covers any task involving Laravel backend PHP code patterns.
-- `fluxui-development` — Use this skill for Flux UI development in Livewire applications only. Trigger when working with <flux:*> components, building or customizing Livewire component UIs, creating forms, modals, tables, or other interactive elements. Covers: flux: components (buttons, inputs, modals, forms, tables, date-pickers, kanban, badges, tooltips, etc.), component composition, Tailwind CSS styling, Heroicons/Lucide icon integration, validation patterns, responsive design, and theming. Do not use for non-Livewire frameworks or non-component styling.
-- `livewire-development` — Use for any task or question involving Livewire. Activate if user mentions Livewire, wire: directives, or Livewire-specific concepts like wire:model, wire:click, wire:sort, or islands, invoke this skill. Covers building new components, debugging reactivity issues, real-time form validation, drag-and-drop, loading states, migrating from Livewire 3 to 4, converting component formats (SFC/MFC/class-based), and performance optimization. Do not use for non-Livewire reactive UI (React, Vue, Alpine-only, Inertia.js) or standard Laravel forms without Livewire.
-- `pest-testing` — Use this skill for Pest PHP testing in Laravel projects only. Trigger whenever any test is being written, edited, fixed, or refactored — including fixing tests that broke after a code change, adding assertions, converting PHPUnit to Pest, adding datasets, and TDD workflows. Always activate when the user asks how to write something in Pest, mentions test files or directories (tests/Feature, tests/Unit, tests/Browser), or needs browser testing, smoke testing multiple pages for JS errors, or architecture tests. Covers: test()/it()/expect() syntax, datasets, mocking, browser testing (visit/click/fill), smoke testing, arch(), Livewire component tests, RefreshDatabase, and all Pest 4 features. Do not use for factories, seeders, migrations, controllers, models, or non-test PHP code.
-- `tailwindcss-development` — Always invoke when the user's message includes 'tailwind' in any form. Also invoke for: building responsive grid layouts (multi-column card grids, product grids), flex/grid page structures (dashboards with sidebars, fixed topbars, mobile-toggle navs), styling UI components (cards, tables, navbars, pricing sections, forms, inputs, badges), adding dark mode variants, fixing spacing or typography, and Tailwind v3/v4 work. The core use case: writing or fixing Tailwind utility classes in HTML templates (Blade, JSX, Vue). Skip for backend PHP logic, database queries, API routes, JavaScript with no HTML/CSS component, CSS file audits, build tool configuration, and vanilla CSS.
+This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
 
 ## Conventions
 
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
-
-## Authorization & Access Control
-
-- This application uses role-based access control via the `rol` column on the `users` table. Roles include: `maatschappelijk_werker`, `bewaker`, `portier`, `developer`.
-- Use the `rol` middleware to protect routes: `Route::middleware('rol:bewaker,developer')`. Check `app/Http/Middleware/CheckRol.php` for implementation.
-- When a user lacks the required role, the middleware logs them out and redirects to login with an error message.
-
-## Application Domain & Models
-
-- **Gedetineerde** (Detained Person): Core entity representing a detained individual with personal data, cell assignment, documents, cases, and history.
-- **Cel** (Cell): Prison cell with status tracking (beschikbaar/available, bezet/occupied).
-- **Zaak** (Case): Criminal case with many-to-many relationship to Gedetineerden.
-- **Bezoeker** (Visitor): Visitors to detained persons.
-- **Document**: Files attached to Gedetineerde records, stored in `storage/app/public`.
-- **Historie**: Audit trail of changes to Gedetineerden (ordered by date descending).
-- All models use proper relationship definitions (belongsTo, hasMany, belongsToMany). See `app/Models/` for examples.
 
 ## Verification Scripts
 
@@ -70,30 +47,9 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 - If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
 
-## Views & Blade Templates
-
-- The application uses Blade templates with custom layouts. Main domain pages extend `resources/views/layouts/hekkensluiter.blade.php`, while the public landing page uses `resources/views/layouts/app-klantenportaal.blade.php`.
-- Feature-specific views are organized by domain: `gedetineerden/`, `zaken/`, `cellen/`, `bezoekers/`.
-- A small set of shared Blade components lives in `resources/views/components/` and is used by auth, settings, dashboard, and layout views, such as `app-logo`, `auth-session-status`, `desktop-user-menu`, `action-message`, and `placeholder-pattern`.
-- Use `wire:navigate` directive for Livewire navigation links to enable fast page transitions.
-
-## File Storage
-
-- Document files (e.g., photos for Gedetineerde) are stored in `storage/app/public` and accessed via routes. See `GedetineerdeController::uploadDocument` and related methods.
-- Use `Storage::store()` in `public` disk for user-accessible files (photos, documents).
-- The `public` disk is configured in `config/filesystems.php` with a public URL at `/storage`.
-
 ## Documentation Files
 
 - You must only create documentation files if explicitly requested by the user.
-
-## Controllers & Routing
-
-- Controllers implement RESTful pattern (index, create, store, show, edit, update, destroy). See `GedetineerdeController`, `ZaakController`, `CelController`, `BezoekerController` for examples.
-- Routes are defined in `routes/web.php` with role-based middleware protection applied at the route level.
-- Many-to-many relationships (e.g., Gedetineerde-Zaak) are handled with `attach()` and `sync()` in controller methods.
-- Special actions like `ontslaan` (release) and `herplaatsen` (relocate) use PATCH routes with custom controller methods.
-- Use `Request::validate()` with validation rules in the same file. Database errors (e.g., constraint violations) are caught and redirected to error view.
 
 ## Replies
 
@@ -130,7 +86,6 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Run Artisan commands directly via the command line (e.g., `php artisan route:list`). Use `php artisan list` to discover available commands and `php artisan [command] --help` to check parameters.
 - Inspect routes with `php artisan route:list`. Filter with: `--method=GET`, `--name=users`, `--path=api`, `--except-vendor`, `--only-vendor`.
 - Read configuration values using dot notation: `php artisan config:show app.name`, `php artisan config:show database.default`. Or read config files directly from the `config/` directory.
-- To check environment variables, read the `.env` file directly.
 
 ## Tinker
 
@@ -148,6 +103,12 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Use TitleCase for Enum keys: `FavoritePerson`, `BestLake`, `Monthly`.
 - Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
 - Use array shape type definitions in PHPDoc blocks.
+
+=== deployments rules ===
+
+# Deployment
+
+- Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
 
 === tests rules ===
 
@@ -186,10 +147,6 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 - If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
 
-## Deployment
-
-- Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
-
 === livewire/core rules ===
 
 # Livewire
@@ -210,6 +167,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 ## Pest
 
 - This project uses Pest for testing. Create tests: `php artisan make:test --pest {name}`.
+- The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
 
