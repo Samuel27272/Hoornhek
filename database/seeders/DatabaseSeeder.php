@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Gedetineerden: 50 — assign to cells respecting capaciteit (1)
+        // Gedetineerden: 10 — assign to cells respecting capaciteit (1)
         $gedetineerden = Gedetineerde::factory()->count(10)->create()->each(function ($g) {
             // find a cell without occupants (respecting capaciteit)
             $cel = Cel::whereDoesntHave('gedetineerden')->inRandomOrder()->first();
