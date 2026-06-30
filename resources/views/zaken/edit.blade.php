@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('zaken.update', ['zaken' => $zaak->id]) }}" method="POST">
+    <form action="{{ route('zaken.update', ['zaak' => $zaak->id]) }}" method="POST">
         @csrf
         @method('PUT')
         @include('zaken._form')

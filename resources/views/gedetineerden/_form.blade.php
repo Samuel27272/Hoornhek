@@ -37,7 +37,7 @@
             <label>BSN-nummer</label>
             <input type="text" name="bsn_nummer" value="{{ old('bsn_nummer', $gedetineerde->bsn_nummer ?? '') }}"
                 required maxlength="9" inputmode="numeric" autocomplete="off" pattern="[0-9]{9}"
-                title="BSN moet uit 9 cijfers bestaan.">
+                title="BSN moet uit 9 cijfers bestaan." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             @error('bsn_nummer')
                 <div style="margin-top:6px; font-size:13px; color:#d32f2f;">{{ $message }}</div>
             @enderror

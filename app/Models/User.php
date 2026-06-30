@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'rol',
+        'role_id',
     ];
 
     /**
@@ -74,5 +74,15 @@ class User extends Authenticatable
     public function uploadedDocuments()
     {
         return $this->hasMany(Document::class, 'geupload_door');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return $this->role?->permissions->contains('name', $permission) ?? false;
     }
 }

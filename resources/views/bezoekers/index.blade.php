@@ -8,8 +8,10 @@
                 style="padding:4px 8px; width:120px; border:1px solid #ccc; border-radius:3px; font-size:13px;">
             <button type="submit"
                 style="background:none; border:1px solid #ccc; width:20px; height:24px; cursor:pointer; border-radius:3px; padding:0;">×</button>
-            <a href="{{ route('bezoekers.create') }}"
-                style="background:none; border:1px solid #ccc; width:20px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:3px; text-decoration:none; color:#111; font-weight:bold;">+</a>
+            @if (auth()->user()->hasPermission('bezoekers.create'))
+                <a href="{{ route('bezoekers.create') }}"
+                    style="background:none; border:1px solid #ccc; width:20px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:3px; text-decoration:none; color:#111; font-weight:bold;">+</a>
+            @endif
         </form>
     </div>
 
@@ -41,15 +43,19 @@
                     <td class="hs-actions-cell">
                         <a href="{{ route('bezoekers.show', ['bezoeker' => $b->id]) }}" class="hs-icon-btn"
                             title="Bekijk">👁</a>
-                        <a href="{{ route('bezoekers.edit', ['bezoeker' => $b->id]) }}" class="hs-icon-btn"
-                            title="Bewerk">✎</a>
-                        <form action="{{ route('bezoekers.destroy', ['bezoeker' => $b->id]) }}" method="POST"
-                            style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="hs-icon-btn" title="Verwijder"
-                                onclick="return confirm('Verwijderen?')">🗑</button>
-                        </form>
+                        @if (auth()->user()->hasPermission('bezoekers.edit'))
+                            <a href="{{ route('bezoekers.edit', ['bezoeker' => $b->id]) }}" class="hs-icon-btn"
+                                title="Bewerk">✎</a>
+                        @endif
+                        @if (auth()->user()->hasPermission('bezoekers.delete'))
+                            <form action="{{ route('bezoekers.destroy', ['bezoeker' => $b->id]) }}" method="POST"
+                                style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="hs-icon-btn" title="Verwijder"
+                                    onclick="return confirm('Verwijderen?')">🗑</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

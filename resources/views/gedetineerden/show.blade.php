@@ -153,8 +153,7 @@
                             <td style="padding:6px 8px;">{{ $document->geuploadDoor->name ?? '—' }}</td>
                             <td style="padding:6px 8px;">{{ $document->created_at->format('d-m-Y H:i') }}</td>
                             <td style="padding:6px 8px;">
-                                @if (in_array(auth()->user()->rol, ['bewaker', 'developer']) ||
-                                        (auth()->user()->rol === 'maatschappelijk_werker' && $document->type === 'gespreksverslag'))
+                                @if (auth()->user()->hasPermission('documenten.delete'))
                                     <form
                                         action="{{ route('gedetineerden.documenten.destroy', [$gedetineerde, $document]) }}"
                                         method="POST">
@@ -173,63 +172,67 @@
     </div>
 
     {{-- Upload formulier --}}
-    <div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; border-radius:3px; margin-bottom:16px;">
-        <span style="font-size:13px; font-weight:700; display:block; margin-bottom:12px;">Document uploaden</span>
-        @if ($errors->any())
-            <div
-                style="background:#fee2e2; border:1px solid #fca5a5; border-radius:3px; padding:10px 12px; margin-bottom:12px;">
-                @foreach ($errors->all() as $error)
-                    <p style="font-size:13px; color:#dc2626; margin:0;">{{ $error }}</p>
-                @endforeach
-            </div>
-        @endif
-        <form action="{{ route('gedetineerden.documenten.store', $gedetineerde) }}" method="POST"
-            enctype="multipart/form-data">
-            @csrf
+    @if (auth()->user()->hasPermission('documenten.upload'))
+        <div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; border-radius:3px; margin-bottom:16px;">
+            <span style="font-size:13px; font-weight:700; display:block; margin-bottom:12px;">Document uploaden</span>
+            @if ($errors->any())
+                <div
+                    style="background:#fee2e2; border:1px solid #fca5a5; border-radius:3px; padding:10px 12px; margin-bottom:12px;">
+                    @foreach ($errors->all() as $error)
+                        <p style="font-size:13px; color:#dc2626; margin:0;">{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+            <form action="{{ route('gedetineerden.documenten.store', $gedetineerde) }}" method="POST"
+                enctype="multipart/form-data">
+                @csrf
 
-            <div style="margin-bottom:12px;">
-                <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Type</label>
-                <select name="type"
-                    style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:13px; width:100%; cursor:pointer;">
-                    @if (in_array(auth()->user()->rol, ['maatschappelijk_werker', 'bewaker', 'developer']))
-                        <option value="gespreksverslag">Gespreksverslag</option>
-                    @endif
-                    @if (in_array(auth()->user()->rol, ['bewaker', 'developer']))
-                        <option value="bewijs_document">Bewijs document</option>
-                        <option value="bewijs_foto">Bewijs foto</option>
-                        <option value="bewijs_video">Bewijs video</option>
-                        <option value="overig">Overig</option>
-                    @endif
-                </select>
-            </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Type</label>
+                    <select name="type"
+                        style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:13px; width:100%; cursor:pointer;">
+                        @if (auth()->user()->hasPermission('documenten.upload'))
+                            <option value="gespreksverslag">Gespreksverslag</option>
+                        @endif
+                        @if (auth()->user()->hasPermission('gedetineerden.edit'))
+                            <option value="bewijs_document">Bewijs document</option>
+                            <option value="bewijs_foto">Bewijs foto</option>
+                            <option value="bewijs_video">Bewijs video</option>
+                            <option value="overig">Overig</option>
+                        @endif
+                    </select>
+                </div>
 
-            <div style="margin-bottom:12px;">
-                <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Bestand</label>
-                <label for="bestand"
-                    style="display:inline-block; padding:6px 12px; background:#6c757d; color:white; border-radius:3px; cursor:pointer; font-size:13px;">Bestand
-                    kiezen</label>
-                <input type="file" name="bestand" id="bestand" style="display:none;" required
-                    onchange="document.getElementById('bestandsnaam').textContent = this.files[0]?.name ?? 'Geen bestand gekozen'">
-                <span id="bestandsnaam" style="font-size:13px; color:#6b7280; margin-left:8px;">Geen bestand
-                    gekozen</span>
-            </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Bestand</label>
+                    <label for="bestand"
+                        style="display:inline-block; padding:6px 12px; background:#6c757d; color:white; border-radius:3px; cursor:pointer; font-size:13px;">Bestand
+                        kiezen</label>
+                    <input type="file" name="bestand" id="bestand" style="display:none;" required
+                        onchange="document.getElementById('bestandsnaam').textContent = this.files[0]?.name ?? 'Geen bestand gekozen'">
+                    <span id="bestandsnaam" style="font-size:13px; color:#6b7280; margin-left:8px;">Geen bestand
+                        gekozen</span>
+                </div>
 
-            <div style="margin-bottom:12px;">
-                <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Omschrijving</label>
-                <textarea name="omschrijving"
-                    style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:13px; width:100%; min-height:80px; resize:vertical;"></textarea>
-            </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Omschrijving</label>
+                    <textarea name="omschrijving"
+                        style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:13px; width:100%; min-height:80px; resize:vertical;"></textarea>
+                </div>
 
-            <button type="submit"
-                style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px;">Uploaden</button>
-        </form>
-    </div>
+                <button type="submit"
+                    style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px;">Uploaden</button>
+            </form>
+        </div>
+    @endif
 
-    @if (in_array(auth()->user()->rol, ['bewaker', 'developer']))
-        <div style="display:flex; gap:8px; justify-content:center;">
+    <div style="display:flex; gap:8px; justify-content:center;">
+        @if (auth()->user()->hasPermission('gedetineerden.edit'))
             <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $gedetineerde->id]) }}"
                 style="background:#007bff; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px; text-decoration:none; display:inline-block;">Bewerk</a>
+        @endif
 
+        @if (auth()->user()->hasPermission('gedetineerden.ontslaan'))
             @if ($gedetineerde->status === 'actief')
                 <form action="{{ route('gedetineerden.ontslaan', $gedetineerde) }}" method="POST"
                     style="display:inline;">
@@ -247,7 +250,9 @@
                         style="background:#28a745; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px;">Activeren</button>
                 </form>
             @endif
+        @endif
 
+        @if (auth()->user()->hasPermission('gedetineerden.delete'))
             <form action="{{ route('gedetineerden.destroy', ['gedetineerden' => $gedetineerde->id]) }}" method="POST"
                 style="display:inline;">
                 @csrf
@@ -256,7 +261,7 @@
                     style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:3px; cursor:pointer; font-size:13px;"
                     onclick="return confirm('Verwijderen?')">Verwijder</button>
             </form>
-        </div>
-    @endif
+        @endif
+    </div>
 
 @endsection

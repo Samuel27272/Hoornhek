@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('cellen.update', ['cellen' => $cel->id]) }}" method="POST">
+    <form action="{{ route('cellen.update', ['cel' => $cel->id]) }}" method="POST">
         @csrf
         @method('PUT')
         @include('cellen._form')

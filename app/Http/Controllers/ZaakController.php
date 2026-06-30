@@ -62,21 +62,21 @@ class ZaakController extends Controller
     }
 
     /** Display the specified resource. */
-    public function show(Zaak $zaken)
+    public function show(Zaak $zaak)
     {
-        $zaken->load('aangemaaktDoor', 'gedetineerden');
+        $zaak->load('aangemaaktDoor', 'gedetineerden');
 
-        return view('zaken.show', ['zaak' => $zaken]);
+        return view('zaken.show', ['zaak' => $zaak]);
     }
 
     /** Show the form for editing the specified resource. */
-    public function edit(Zaak $zaken)
+    public function edit(Zaak $zaak)
     {
-        return view('zaken.edit', ['zaak' => $zaken]);
+        return view('zaken.edit', ['zaak' => $zaak]);
     }
 
     /** Update the specified resource in storage. */
-    public function update(Request $request, Zaak $zaken)
+    public function update(Request $request, Zaak $zaak)
     {
         try {
             $data = $request->validate([
@@ -87,11 +87,11 @@ class ZaakController extends Controller
                 'opmerkingen' => 'nullable|string|max:2000',
             ]);
 
-            if ($data['status'] === 'gesloten' && $zaken->status !== 'gesloten') {
+            if ($data['status'] === 'gesloten' && $zaak->status !== 'gesloten') {
                 $data['datum_gesloten'] = now()->toDateString();
             }
 
-            $zaken->update($data);
+            $zaak->update($data);
 
             return redirect()->route('zaken.index')->with('success', 'Wijzigingen opgeslagen.');
         } catch (QueryException $exception) {
@@ -102,9 +102,9 @@ class ZaakController extends Controller
     }
 
     /** Remove the specified resource from storage. */
-    public function destroy(Zaak $zaken)
+    public function destroy(Zaak $zaak)
     {
-        Zaak::query()->whereKey($zaken->getKey())->delete();
+        Zaak::query()->whereKey($zaak->getKey())->delete();
 
         return redirect()->route('zaken.index')->with('success', 'Zaak verwijderd.');
     }

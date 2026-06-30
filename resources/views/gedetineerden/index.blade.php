@@ -9,7 +9,7 @@
             <button type="submit"
                 style="background:none; border:1px solid #ccc; width:20px; height:24px; cursor:pointer; border-radius:3px; padding:0;">×</button>
 
-            @if (in_array(auth()->user()->rol, ['bewaker', 'developer']))
+            @if (auth()->user()->hasPermission('gedetineerden.create'))
                 <a href="{{ route('gedetineerden.create') }}"
                     style="background:none; border:1px solid #ccc; width:20px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:3px; text-decoration:none; color:#111; font-weight:bold;">+</a>
             @endif
@@ -53,9 +53,11 @@
                         <a href="{{ route('gedetineerden.show', ['gedetineerden' => $g->id]) }}" class="hs-icon-btn"
                             title="Bekijk">👁</a>
 
-                        @if (in_array(auth()->user()->rol, ['bewaker', 'developer']))
+                        @if (auth()->user()->hasPermission('gedetineerden.edit'))
                             <a href="{{ route('gedetineerden.edit', ['gedetineerden' => $g->id]) }}" class="hs-icon-btn"
                                 title="Bewerk">✎</a>
+                        @endif
+                        @if (auth()->user()->hasPermission('gedetineerden.delete'))
                             <form action="{{ route('gedetineerden.destroy', ['gedetineerden' => $g->id]) }}" method="POST"
                                 style="display:inline;">
                                 @csrf

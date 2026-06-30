@@ -13,18 +13,17 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
+        $user = $request->user();
 
-        $rol = $request->user()->rol ?? null;
+        if ($user->hasPermission('gedetineerden.view')) {
+            return redirect()->intended(route('gedetineerden.index'));
+        }
 
-        $redirect = match ($rol) {
-            'portier'                    => route('bezoekers.index'),
-            'maatschappelijk_werker' => route('gedetineerden.index'),
-            'bewaker'                    => route('gedetineerden.index'),
-            'developer'                  => route('gedetineerden.index'),
-            default                      => '/dashboard',
-        };
+        if ($user->hasPermission('bezoekers.view')) {
+            return redirect()->intended(route('bezoekers.index'));
+        }
 
-        return redirect()->intended($redirect);
+        return redirect()->intended('/dashboard');
     }
 }
 

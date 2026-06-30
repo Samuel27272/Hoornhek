@@ -56,21 +56,21 @@ class CelController extends Controller
     }
 
     /** Display the specified resource. */
-    public function show(Cel $cellen)
+    public function show(Cel $cel)
     {
-        $cellen->load('gedetineerden');
+        $cel->load('gedetineerden');
 
-        return view('cellen.show', ['cel' => $cellen]);
+        return view('cellen.show', ['cel' => $cel]);
     }
 
     /** Show the form for editing the specified resource. */
-    public function edit(Cel $cellen)
+    public function edit(Cel $cel)
     {
-        return view('cellen.edit', ['cel' => $cellen]);
+        return view('cellen.edit', ['cel' => $cel]);
     }
 
     /** Update the specified resource in storage. */
-    public function update(Request $request, Cel $cellen)
+    public function update(Request $request, Cel $cel)
     {
         try {
             $data = $request->validate([
@@ -80,7 +80,7 @@ class CelController extends Controller
                 'opmerkingen' => 'nullable|string|max:2000',
             ]);
 
-            $cellen->update($data);
+            $cel->update($data);
 
             return redirect()->route('cellen.index')->with('success', 'Wijzigingen opgeslagen.');
         } catch (QueryException $exception) {
@@ -91,9 +91,9 @@ class CelController extends Controller
     }
 
     /** Remove the specified resource from storage. */
-    public function destroy(Cel $cellen)
+    public function destroy(Cel $cel)
     {
-        Cel::query()->whereKey($cellen->getKey())->delete();
+        Cel::query()->whereKey($cel->getKey())->delete();
 
         return redirect()->route('cellen.index')->with('success', 'Cel verwijderd.');
     }

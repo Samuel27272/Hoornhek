@@ -19,21 +19,29 @@
             </div>
 
             <nav class="hs-tabs" aria-label="Hoofdmenu">
-                @if (in_array(auth()->user()->rol, ['bewaker', 'developer', 'maatschappelijk_werker']))
+                @if (auth()->user()->hasPermission('gedetineerden.view'))
                     <a class="hs-tab {{ Route::is('gedetineerden.*') ? 'active' : '' }}"
                         href="{{ route('gedetineerden.index') }}">Gedetineerden</a>
                 @endif
 
-                @if (in_array(auth()->user()->rol, ['bewaker', 'developer']))
+                @if (auth()->user()->hasPermission('zaken.view'))
                     <a class="hs-tab {{ Route::is('zaken.*') ? 'active' : '' }}"
                         href="{{ route('zaken.index') }}">Zaken</a>
+                @endif
+
+                @if (auth()->user()->hasPermission('cellen.view'))
                     <a class="hs-tab {{ Route::is('cellen.*') ? 'active' : '' }}"
                         href="{{ route('cellen.index') }}">Cellen</a>
                 @endif
 
-                @if (in_array(auth()->user()->rol, ['portier', 'bewaker', 'developer']))
+                @if (auth()->user()->hasPermission('bezoekers.view'))
                     <a class="hs-tab {{ Route::is('bezoekers.*') ? 'active' : '' }}"
                         href="{{ route('bezoekers.index') }}">Bezoekers</a>
+                @endif
+
+                @if (auth()->user()->hasPermission('admin.access'))
+                    <a class="hs-tab {{ Route::is('admin.*') ? 'active' : '' }}"
+                        href="{{ route('admin.index') }}">Beheer</a>
                 @endif
 
                 <form method="POST" action="{{ route('logout') }}">

@@ -37,9 +37,9 @@
                     <td>{{ ucfirst(str_replace('_', ' ', $c->status)) }}</td>
                     <td>{{ substr($c->opmerkingen ?? '', 0, 60) }}</td>
                     <td class="hs-actions-cell">
-                        <a href="{{ route('cellen.show', ['cellen' => $c->id]) }}" class="hs-icon-btn" title="Bekijk">👁</a>
-                        <a href="{{ route('cellen.edit', ['cellen' => $c->id]) }}" class="hs-icon-btn" title="Bewerk">✎</a>
-                        <form action="{{ route('cellen.destroy', ['cellen' => $c->id]) }}" method="POST"
+                        <a href="{{ route('cellen.show', ['cel' => $c->id]) }}" class="hs-icon-btn" title="Bekijk">👁</a>
+                        <a href="{{ route('cellen.edit', ['cel' => $c->id]) }}" class="hs-icon-btn" title="Bewerk">✎</a>
+                        <form action="{{ route('cellen.destroy', ['cel' => $c->id]) }}" method="POST"
                             style="display:inline;">
                             @csrf
                             @method('DELETE')
