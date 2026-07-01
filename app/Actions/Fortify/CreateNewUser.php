@@ -24,11 +24,13 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
+        $role = \App\Models\Role::where('name', 'bewaker')->first();
+
         return User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
+            'name'     => $input['name'],
+            'email'    => $input['email'],
             'password' => $input['password'],
-            'rol' => 'bewaker',
+            'role_id'  => $role?->id,
         ]);
     }
 }
