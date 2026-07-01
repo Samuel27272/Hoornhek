@@ -3,7 +3,7 @@
 @section('buiten_panel')
     @if ($gedetineerde->foto_pad)
         <div style="margin-bottom:8px;">
-            <img src="{{ Storage::url($gedetineerde->foto_pad) }}"
+            <img src="{{ route('gedetineerden.foto', $gedetineerde) }}"
                 style="width:150px; height:150px; object-fit:cover; border-radius:6px; border:1px solid #d1d5db;">
         </div>
     @endif
@@ -145,7 +145,7 @@
                     @foreach ($gedetineerde->documenten as $document)
                         <tr style="border-bottom:1px solid #f0f0f0;">
                             <td style="padding:6px 8px;">
-                                <a href="{{ Storage::url($document->bestand_pad) }}"
+                                <a href="{{ route('documenten.show', $document) }}"
                                     target="_blank">{{ $document->bestandsnaam }}</a>
                             </td>
                             <td style="padding:6px 8px;">{{ ucfirst(str_replace('_', ' ', $document->type)) }}</td>

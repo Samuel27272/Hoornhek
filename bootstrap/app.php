@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'rol' => CheckRol::class,
             'permission' => CheckPermission::class,
+            '2fa' => \App\Http\Middleware\EnsureTwoFactorIsEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

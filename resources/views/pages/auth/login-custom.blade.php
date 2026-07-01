@@ -46,8 +46,12 @@
                         required autocomplete="current-password" autocapitalize="off" spellcheck="false"
                         maxlength="255">
 
+                    <a href="{{ route('password.request') }}"
+                        style="display:block; text-align:right; font-size:13px; margin:6px 0 16px 0; color:#007bff;">
+                        Wachtwoord vergeten?
+                    </a>
+
                     <button type="submit" class="btn">Inloggen</button>
-                </form>
                 </form>
             </div>
         </div>

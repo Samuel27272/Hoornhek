@@ -8,7 +8,7 @@
 
         @if (isset($gedetineerde) && $gedetineerde->foto_pad)
             <div style="margin-bottom:12px;">
-                <img src="{{ Storage::url($gedetineerde->foto_pad) }}"
+                <img src="{{ route('gedetineerden.foto', $gedetineerde) }}"
                     style="width:120px; height:120px; object-fit:cover; border-radius:6px; border:1px solid #d1d5db;">
             </div>
             <div style="margin-bottom:8px; display:flex; align-items:center; gap:8px;">

@@ -11,22 +11,38 @@ Route::get('/', function () {
     return view('klantenportaal');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', '2fa'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
     /** Gedetineerden routes */
     Route::get('/gedetineerden', [GedetineerdeController::class, 'index'])->name('gedetineerden.index')->middleware('permission:gedetineerden.view');
+
     Route::get('/gedetineerden/create', [GedetineerdeController::class, 'create'])->name('gedetineerden.create')->middleware('permission:gedetineerden.create');
+
     Route::post('/gedetineerden', [GedetineerdeController::class, 'store'])->name('gedetineerden.store')->middleware('permission:gedetineerden.create');
+
     Route::get('/gedetineerden/{gedetineerden}/edit', [GedetineerdeController::class, 'edit'])->name('gedetineerden.edit')->middleware('permission:gedetineerden.edit');
+
     Route::put('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'update'])->name('gedetineerden.update')->middleware('permission:gedetineerden.edit');
+
     Route::delete('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'destroy'])->name('gedetineerden.destroy')->middleware('permission:gedetineerden.delete');
+
     Route::get('/gedetineerden/{gedetineerden}', [GedetineerdeController::class, 'show'])->name('gedetineerden.show')->middleware('permission:gedetineerden.view');
 
     Route::post('/gedetineerden/{gedetineerde}/documenten', [GedetineerdeController::class, 'uploadDocument'])->name('gedetineerden.documenten.store')->middleware('permission:documenten.upload');
+
     Route::delete('/gedetineerden/{gedetineerde}/documenten/{document}', [GedetineerdeController::class, 'verwijderDocument'])->name('gedetineerden.documenten.destroy')->middleware('permission:documenten.delete');
 
+    Route::middleware('permission:documenten.upload')
+        ->get('/documenten/{document}/show', [GedetineerdeController::class, 'showDocument'])
+        ->name('documenten.show');
+
+    Route::middleware('permission:gedetineerden.view')
+        ->get('/gedetineerden/{gedetineerde}/foto', [GedetineerdeController::class, 'showPhoto'])
+        ->name('gedetineerden.foto');
+
     Route::patch('/gedetineerden/{gedetineerden}/ontslaan', [GedetineerdeController::class, 'ontslaan'])->name('gedetineerden.ontslaan')->middleware('permission:gedetineerden.ontslaan');
+
     Route::patch('/gedetineerden/{gedetineerden}/herplaatsen', [GedetineerdeController::class, 'herplaatsen'])->name('gedetineerden.herplaatsen')->middleware('permission:gedetineerden.herplaatsen');
 
     /** Zaken routes */
@@ -34,14 +50,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/zaken/create', [ZaakController::class, 'create'])->name('zaken.create');
         Route::post('/zaken', [ZaakController::class, 'store'])->name('zaken.store');
     });
+
     Route::middleware('permission:zaken.view')->group(function () {
         Route::get('/zaken', [ZaakController::class, 'index'])->name('zaken.index');
         Route::get('/zaken/{zaak}', [ZaakController::class, 'show'])->name('zaken.show');
     });
+
     Route::middleware('permission:zaken.edit')->group(function () {
         Route::get('/zaken/{zaak}/edit', [ZaakController::class, 'edit'])->name('zaken.edit');
         Route::put('/zaken/{zaak}', [ZaakController::class, 'update'])->name('zaken.update');
     });
+
     Route::delete('/zaken/{zaak}', [ZaakController::class, 'destroy'])->name('zaken.destroy')->middleware('permission:zaken.delete');
 
     /** Cellen routes */
@@ -49,15 +68,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/cellen/create', [CelController::class, 'create'])->name('cellen.create');
         Route::post('/cellen', [CelController::class, 'store'])->name('cellen.store');
     });
+
     Route::middleware('permission:cellen.view')->group(function () {
         Route::get('/cellen', [CelController::class, 'index'])->name('cellen.index');
         Route::get('/cellen/overview', [CelController::class, 'overview'])->name('cellen.overview');
         Route::get('/cellen/{cel}', [CelController::class, 'show'])->name('cellen.show');
     });
+
     Route::middleware('permission:cellen.edit')->group(function () {
         Route::get('/cellen/{cel}/edit', [CelController::class, 'edit'])->name('cellen.edit');
         Route::put('/cellen/{cel}', [CelController::class, 'update'])->name('cellen.update');
     });
+
     Route::delete('/cellen/{cel}', [CelController::class, 'destroy'])->name('cellen.destroy')->middleware('permission:cellen.delete');
 
     /** Bezoekers routes */
@@ -65,33 +87,53 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/bezoekers/create', [BezoekerController::class, 'create'])->name('bezoekers.create');
         Route::post('/bezoekers', [BezoekerController::class, 'store'])->name('bezoekers.store');
     });
+
     Route::middleware('permission:bezoekers.view')->group(function () {
         Route::get('/bezoekers', [BezoekerController::class, 'index'])->name('bezoekers.index');
         Route::get('/bezoekers/{bezoeker}', [BezoekerController::class, 'show'])->name('bezoekers.show');
     });
+
     Route::middleware('permission:bezoekers.edit')->group(function () {
         Route::get('/bezoekers/{bezoeker}/edit', [BezoekerController::class, 'edit'])->name('bezoekers.edit');
         Route::put('/bezoekers/{bezoeker}', [BezoekerController::class, 'update'])->name('bezoekers.update');
     });
+
     Route::delete('/bezoekers/{bezoeker}', [BezoekerController::class, 'destroy'])->name('bezoekers.destroy')->middleware('permission:bezoekers.delete');
 
-    /** Beheer routes */
+    /** Admin routes */
     Route::middleware('permission:admin.access')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
+
         Route::middleware('permission:users.view')->get('/users', [AdminController::class, 'users'])->name('users.index');
+
         Route::middleware('permission:users.create')->get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+
         Route::middleware('permission:users.create')->post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+
         Route::middleware('permission:users.edit')->get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+
         Route::middleware('permission:users.edit')->put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+
         Route::middleware('permission:users.delete')->delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+
         Route::middleware('permission:roles.view')->get('/roles', [AdminController::class, 'roles'])->name('roles.index');
+
         Route::middleware('permission:roles.create')->get('/roles/create', [AdminController::class, 'createRole'])->name('roles.create');
+
         Route::middleware('permission:roles.create')->post('/roles', [AdminController::class, 'storeRole'])->name('roles.store');
+
         Route::middleware('permission:roles.edit')->get('/roles/{role}/edit', [AdminController::class, 'editRole'])->name('roles.edit');
+
         Route::middleware('permission:roles.edit')->put('/roles/{role}', [AdminController::class, 'updateRole'])->name('roles.update');
+
         Route::middleware('permission:roles.delete')->delete('/roles/{role}', [AdminController::class, 'destroyRole'])->name('roles.destroy');
+
         Route::middleware('permission:logs.view')->get('/login-logs', [AdminController::class, 'loginLogs'])->name('login-logs.index');
     });
 });
+
+Route::middleware(['auth'])->get('/two-factor-settings', function () {
+    return view('two-factor-settings');
+})->name('two-factor.settings');
 
 require __DIR__ . '/settings.php';

@@ -62,7 +62,7 @@ class GedetineerdeController extends Controller
             }
 
             if ($request->hasFile('foto_pad')) {
-                $data['foto_pad'] = $request->file('foto_pad')->store('fotos', 'public');
+                $data['foto_pad'] = $request->file('foto_pad')->store('fotos', 'local');
             }
 
             $gedetineerde = Gedetineerde::create($data);
@@ -146,12 +146,12 @@ class GedetineerdeController extends Controller
 
             if ($request->hasFile('foto_pad')) {
                 if ($gedetineerden->foto_pad) {
-                    Storage::disk('public')->delete($gedetineerden->foto_pad);
+                    Storage::disk('local')->delete($gedetineerden->foto_pad);
                 }
-                $data['foto_pad'] = $request->file('foto_pad')->store('fotos', 'public');
+                $data['foto_pad'] = $request->file('foto_pad')->store('fotos', 'local');
             } elseif ($request->boolean('foto_verwijderen')) {
                 if ($gedetineerden->foto_pad) {
-                    Storage::disk('public')->delete($gedetineerden->foto_pad);
+                    Storage::disk('local')->delete($gedetineerden->foto_pad);
                 }
                 $data['foto_pad'] = null;
             } else {
@@ -188,26 +188,30 @@ class GedetineerdeController extends Controller
         return redirect()->route('gedetineerden.index')->with('success', 'Gedetineerde verwijderd.');
     }
 
-    /** Upload Document*/
     public function uploadDocument(Request $request, Gedetineerde $gedetineerde)
     {
         $request->validate([
-            'bestand' => 'required|file|max:51200',
+            'bestand' => [
+                'required',
+                'file',
+                'max:51200',
+                'mimes:pdf,doc,docx,jpg,jpeg,png,webp,mp4,mov',
+            ],
             'type' => 'required|in:bewijs_document,bewijs_foto,bewijs_video,gespreksverslag,overig',
             'omschrijving' => 'nullable|string',
         ]);
 
         $bestand = $request->file('bestand');
-        $pad = $bestand->store('documenten/' . $gedetineerde->id, 'public');
+        $pad = $bestand->store('documenten/' . $gedetineerde->id, 'local');
 
         Document::create([
             'gedetineerde_id' => $gedetineerde->id,
-            'geupload_door' => Auth::user()->id,
-            'bestandsnaam' => $bestand->getClientOriginalName(),
-            'bestand_pad' => $pad,
-            'mime_type' => $bestand->getMimeType(),
-            'type' => $request->type,
-            'omschrijving' => $request->omschrijving,
+            'geupload_door'   => Auth::user()->id,
+            'bestandsnaam'    => $bestand->getClientOriginalName(),
+            'bestand_pad'     => $pad,
+            'mime_type'       => $bestand->getMimeType(),
+            'type'            => $request->type,
+            'omschrijving'    => $request->omschrijving,
         ]);
 
         return back()->with('success', 'Document geüpload.');
@@ -216,13 +220,17 @@ class GedetineerdeController extends Controller
     /** Verwijder Document */
     public function verwijderDocument(Gedetineerde $gedetineerde, Document $document)
     {
-        $rol = Auth::user()->rol;
+        $user = Auth::user();
 
-        if ($rol === 'maatschappelijk_werker' && $document->type !== 'gespreksverslag') {
+        if (! $user->hasPermission('documenten.delete')) {
             abort(403, 'Geen toegang.');
         }
 
-        Storage::disk('public')->delete($document->bestand_pad);
+        if (! $user->hasPermission('gedetineerden.edit') && $document->type !== 'gespreksverslag') {
+            abort(403, 'Geen toegang.');
+        }
+
+        Storage::disk('local')->delete($document->bestand_pad);
         Document::query()->whereKey($document->getKey())->delete();
 
         return back()->with('success', 'Document verwijderd.');
@@ -310,7 +318,7 @@ class GedetineerdeController extends Controller
             'opmerkingen' => 'nullable|string|max:2000',
             'zaken' => 'nullable|array',
             'zaken.*' => 'exists:zaken,id',
-            'foto_pad' => 'nullable|image|max:5120',
+            'foto_pad' => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
         ];
     }
 
@@ -327,5 +335,27 @@ class GedetineerdeController extends Controller
             'postcode.regex' => 'Gebruik een geldige postcode, bijvoorbeeld 1234 AB.',
             'telefoonnummer.regex' => 'Gebruik alleen cijfers, spaties en + - ( ).',
         ];
+    }
+
+    public function showDocument(Document $document)
+    {
+        if (! Storage::disk('local')->exists($document->bestand_pad)) {
+            abort(404);
+        }
+
+        return Storage::disk('local')->response(
+            $document->bestand_pad,
+            $document->bestandsnaam,
+            ['Content-Type' => $document->mime_type]
+        );
+    }
+
+    public function showPhoto(Gedetineerde $gedetineerde)
+    {
+        if (! $gedetineerde->foto_pad || ! Storage::disk('local')->exists($gedetineerde->foto_pad)) {
+            abort(404);
+        }
+
+        return Storage::disk('local')->response($gedetineerde->foto_pad);
     }
 }
