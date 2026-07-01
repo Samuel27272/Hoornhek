@@ -12,7 +12,8 @@
             <flux:input name="email" :label="__('Email address')" type="email" required autofocus
                 placeholder="email@example.com" />
 
-            <flux:button variant="primary" type="submit" class="w-full" data-test="email-password-reset-link-button">
+            <flux:button variant="primary" type="submit" class="w-full" data-test="email-password-reset-link-button"
+                style="cursor: pointer">
                 {{ __('Email password reset link') }}
             </flux:button>
         </form>

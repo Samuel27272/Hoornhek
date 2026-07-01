@@ -32,6 +32,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configurePasswordResetThrottling();
 
         RedirectIfAuthenticated::redirectUsing(function ($request) {
             if (RouteFacade::has('gedetineerden.index')) {
@@ -82,5 +83,17 @@ class FortifyServiceProvider extends ServiceProvider
 
             return Limit::perMinute(5)->by($throttleKey);
         });
+    }
+
+    /**
+     * Configure password reset throttling.
+     */
+    private function configurePasswordResetThrottling(): void
+    {
+        foreach (['password.email', 'password.update'] as $routeName) {
+            if ($route = RouteFacade::getRoutes()->getByName($routeName)) {
+                $route->middleware('throttle:5,1');
+            }
+        }
     }
 }
