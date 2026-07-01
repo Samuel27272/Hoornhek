@@ -16,6 +16,7 @@ class Cel extends Model
     protected $table = 'cellen';
     protected $fillable = [
         'cel_nummer',
+        'block',
         'capaciteit',
         'status',
         'opmerkingen',

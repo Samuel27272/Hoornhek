@@ -43,12 +43,13 @@ class DatabaseSeeder extends Seeder
 
         $blocks = ['A', 'B', 'C'];
         foreach ($blocks as $block) {
-            for ($n = 1; $n <= 33; $n++) {
+            for ($n = 1; $n <= 32; $n++) {
                 $num = sprintf('%s-%02d', $block, $n);
                 Cel::create([
                     'cel_nummer' => $num,
                     'capaciteit' => 1,
                     'status' => 'beschikbaar',
+                    'block' => $block,
                 ]);
             }
         }

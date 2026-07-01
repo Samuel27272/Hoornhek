@@ -14,10 +14,16 @@
                     title="Gebruik alleen letters, cijfers en koppeltekens.">
             </div>
             <div class="form-group">
-                <label>Capaciteit</label>
-                <input type="number" name="capaciteit" value="{{ old('capaciteit', $cel->capaciteit ?? '') }}"
-                    min="1" max="999" step="1" inputmode="numeric" required>
+                <label>Blok</label>
+                <input type="text" name="block" value="{{ old('block', $cel->block ?? '') }}" required
+                    maxlength="10" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
             </div>
+        </div>
+
+        <div class="form-group">
+            <label>Capaciteit</label>
+            <input type="number" name="capaciteit" value="{{ old('capaciteit', $cel->capaciteit ?? '') }}"
+                min="1" max="999" step="1" inputmode="numeric" required>
         </div>
 
         <div class="form-group">

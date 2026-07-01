@@ -51,6 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::middleware('permission:cellen.view')->group(function () {
         Route::get('/cellen', [CelController::class, 'index'])->name('cellen.index');
+        Route::get('/cellen/overview', [CelController::class, 'overview'])->name('cellen.overview');
         Route::get('/cellen/{cel}', [CelController::class, 'show'])->name('cellen.show');
     });
     Route::middleware('permission:cellen.edit')->group(function () {

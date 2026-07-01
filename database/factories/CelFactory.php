@@ -14,8 +14,12 @@ class CelFactory extends Factory
 
     public function definition(): array
     {
+        $block = fake()->randomElement(['A', 'B', 'C']);
+        $number = fake()->unique()->numberBetween(1, 32);
+
         return [
-            'cel_nummer' => 'A-01',
+            'cel_nummer' => sprintf('%s-%02d', $block, $number),
+            'block' => $block,
             'capaciteit' => 1,
             'status' => 'beschikbaar',
             'opmerkingen' => null,

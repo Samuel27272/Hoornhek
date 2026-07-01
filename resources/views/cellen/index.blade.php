@@ -10,6 +10,10 @@
                 style="background:none; border:1px solid #ccc; width:20px; height:24px; cursor:pointer; border-radius:3px; padding:0;">×</button>
             <a href="{{ route('cellen.create') }}"
                 style="background:none; border:1px solid #ccc; width:20px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:3px; text-decoration:none; color:#111; font-weight:bold;">+</a>
+            <a href="{{ route('cellen.overview') }}"
+                style="background:#007bff; color:white; padding:4px 10px; border-radius:3px; text-decoration:none; font-size:13px;">
+                Overzicht
+            </a>
         </form>
     </div>
 
