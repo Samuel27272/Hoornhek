@@ -19,7 +19,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('rol', ['bewaker', 'portier', 'maatschappelijk_werker', 'developer'])->nullable();
+            $table->enum('rol', ['bewaker', 'portier', 'maatschappelijk_werker', 'beheerder'])->nullable();
         });
     }
 };

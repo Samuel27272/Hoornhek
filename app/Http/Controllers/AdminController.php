@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -77,5 +78,61 @@ class AdminController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'Gebruiker verwijderd.');
+    }
+
+    public function roles()
+    {
+        $roles = Role::with('permissions')->orderBy('display_name')->get();
+        return view('admin.roles.index', compact('roles'));
+    }
+
+    public function editRole(Role $role)
+    {
+        $permissions = Permission::orderBy('group')->orderBy('display_name')->get();
+        $permissionsPerGroep = $permissions->groupBy('group');
+        return view('admin.roles.edit', compact('role', 'permissionsPerGroep'));
+    }
+
+    public function updateRole(Request $request, Role $role)
+    {
+        $role->permissions()->sync($request->input('permissions', []));
+        return redirect()->route('admin.roles.index')->with('success', 'Rechten opgeslagen.');
+    }
+
+    public function createRole()
+    {
+        $permissions = Permission::orderBy('group')->orderBy('display_name')->get();
+        $permissionsPerGroep = $permissions->groupBy('group');
+        return view('admin.roles.create', compact('permissionsPerGroep'));
+    }
+
+    public function storeRole(Request $request)
+    {
+        $data = $request->validate([
+            'name'         => 'required|string|max:50|unique:roles,name',
+            'display_name' => 'required|string|max:100',
+        ]);
+
+        $role = Role::create($data);
+        $role->permissions()->sync($request->input('permissions', []));
+
+        return redirect()->route('admin.roles.index')->with('success', 'Rol aangemaakt.');
+    }
+
+    public function destroyRole(Role $role)
+    {
+        if ($role->users()->exists()) {
+            return redirect()->route('admin.roles.index')->with('error', 'Deze rol is nog gekoppeld aan gebruikers en kan niet verwijderd worden.');
+        }
+
+        $role->delete();
+
+        return redirect()->route('admin.roles.index')->with('success', 'Rol verwijderd.');
+    }
+
+    public function loginLogs()
+    {
+        $logs = \App\Models\LoginLog::with('user')->latest('created_at')->paginate(20);
+        return view('admin.login-logs', compact('logs'));
     }
 }

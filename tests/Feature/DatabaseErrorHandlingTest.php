@@ -8,7 +8,7 @@ uses(RefreshDatabase::class);
 
 test('shows a friendly database error on failed form submissions', function () {
     $this->actingAs($user = User::factory()->createOne([
-        'rol' => 'developer',
+        'rol' => 'beheerder',
     ]));
 
     $zaaknummer = 'ZK-2026-999';

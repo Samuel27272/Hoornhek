@@ -9,7 +9,7 @@ uses(RefreshDatabase::class);
 
 test('does not create relocation history when a gedetineerde stays in the same cell', function () {
     $user = User::factory()->createOne([
-        'rol' => 'developer',
+        'rol' => 'beheerder',
     ]);
 
     $this->actingAs($user);

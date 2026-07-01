@@ -7,7 +7,7 @@ uses(RefreshDatabase::class);
 
 test('resource forms expose tighter input constraints', function () {
     $user = User::factory()->createOne([
-        'rol' => 'developer',
+        'rol' => 'beheerder',
     ]);
     $today = now()->format('Y-m-d');
 

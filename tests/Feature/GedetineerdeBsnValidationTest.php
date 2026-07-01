@@ -8,7 +8,7 @@ uses(RefreshDatabase::class);
 
 test('rejects duplicate bsn numbers with a specific validation error', function () {
     $user = User::factory()->createOne([
-        'rol' => 'developer',
+        'rol' => 'beheerder',
     ]);
 
     $this->actingAs($user);

@@ -83,6 +83,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware('permission:users.edit')->get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
         Route::middleware('permission:users.edit')->put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
         Route::middleware('permission:users.delete')->delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+        Route::middleware('permission:roles.view')->get('/roles', [AdminController::class, 'roles'])->name('roles.index');
+        Route::middleware('permission:roles.create')->get('/roles/create', [AdminController::class, 'createRole'])->name('roles.create');
+        Route::middleware('permission:roles.create')->post('/roles', [AdminController::class, 'storeRole'])->name('roles.store');
+        Route::middleware('permission:roles.edit')->get('/roles/{role}/edit', [AdminController::class, 'editRole'])->name('roles.edit');
+        Route::middleware('permission:roles.edit')->put('/roles/{role}', [AdminController::class, 'updateRole'])->name('roles.update');
+        Route::middleware('permission:roles.delete')->delete('/roles/{role}', [AdminController::class, 'destroyRole'])->name('roles.destroy');
+        Route::middleware('permission:logs.view')->get('/login-logs', [AdminController::class, 'loginLogs'])->name('login-logs.index');
     });
 });
 

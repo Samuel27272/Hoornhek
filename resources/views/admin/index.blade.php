@@ -10,5 +10,17 @@
                 Gebruikersbeheer
             </a>
         @endif
+        @if (auth()->user()->hasPermission('roles.view'))
+            <a href="{{ route('admin.roles.index') }}"
+                style="background:#007bff; color:white; padding:12px 20px; border-radius:3px; text-decoration:none; font-size:13px;">
+                Rollenbeheer
+            </a>
+        @endif
+        @if (auth()->user()->hasPermission('logs.view'))
+            <a href="{{ route('admin.login-logs.index') }}"
+                style="background:#007bff; color:white; padding:12px 20px; border-radius:3px; text-decoration:none; font-size:13px;">
+                Login logs
+            </a>
+        @endif
     </div>
 @endsection

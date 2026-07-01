@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Cel;
 use App\Models\Gedetineerde;
 use App\Models\Zaak;
+use App\Models\Role;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,28 +18,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Users: 3 per role except developer 1
-        $roles = [
-            'bewaker' => 3,
-            'portier' => 3,
-            'maatschappelijk_werker' => 3,
-            'developer' => 1,
+        $this->call(RolesAndPermissionsSeeder::class);
+
+        $gebruikers = [
+            'bewaker' => ['Jochem de Visser', 'Leon Maljaars', 'Mark De Jong'],
+            'portier' => ['Gert van Dongen', 'Luuk van den Tol', 'Wijnand Stolk'],
+            'maatschappelijk_werker' => ['Jaco Offermans', 'Lennert van Dijke', 'Bart van der Stelt'],
+            'beheerder' => ['Samuel Burggraaf'],
         ];
 
-        foreach ($roles as $role => $count) {
-            for ($i = 1; $i <= $count; $i++) {
-                $name = ucfirst(str_replace('_', ' ', $role)) . ' ' . $i;
-                $emailLocal = strtolower(str_replace(' ', '', $name));
+        foreach ($gebruikers as $roleName => $namen) {
+            $role = Role::where('name', $roleName)->first();
+
+            foreach ($namen as $naam) {
+                $emailLocal = Str::of($naam)->lower()->replace(' ', '.')->replace("'", '');
 
                 User::factory()->create([
-                    'name' => $name,
+                    'name' => $naam,
                     'email' => $emailLocal . '@hoornhek.nl',
-                    'rol' => $role,
+                    'role_id' => $role->id,
                 ]);
             }
         }
 
-        // Cells A-01..A-33, B-01..B-33, C-01..C-33
         $blocks = ['A', 'B', 'C'];
         foreach ($blocks as $block) {
             for ($n = 1; $n <= 33; $n++) {
@@ -50,15 +53,13 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Gedetineerden: 10 — assign to cells respecting capaciteit (1)
         $gedetineerden = Gedetineerde::factory()->count(10)->create()->each(function ($g) {
-            // find a cell without occupants (respecting capaciteit)
+
             $cel = Cel::whereDoesntHave('gedetineerden')->inRandomOrder()->first();
             if ($cel) {
                 $g->cel_id = $cel->id;
                 $g->save();
 
-                // if cell reached capacity, mark as 'bezet'
                 if ($cel->gedetineerden()->count() >= $cel->capaciteit) {
                     $cel->status = 'bezet';
                     $cel->save();
@@ -66,7 +67,6 @@ class DatabaseSeeder extends Seeder
             }
         });
 
-        // For each gedetineerde create one zaak and attach
         foreach ($gedetineerden as $gedetineerde) {
             $zaak = Zaak::factory()->create([
                 'aangemaakt_door' => null,
