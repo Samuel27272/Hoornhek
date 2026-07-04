@@ -30,10 +30,16 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'role_id'  => 'required|exists:roles,id',
+            'name'            => 'required|string|max:255',
+            'email'           => 'required|email|unique:users,email',
+            'password'        => 'required|string|min:8|confirmed',
+            'role_id'         => 'required|exists:roles,id',
+            'geboortedatum'   => 'nullable|date',
+            'straatnaam'      => 'nullable|string|max:255',
+            'huisnummer'      => 'nullable|integer|min:1|max:99999',
+            'postcode'        => 'nullable|string|max:7|regex:/^[1-9][0-9]{3}\s?[A-Za-z]{2}$/',
+            'woonplaats'      => 'nullable|string|max:255',
+            'telefoonnummer'  => 'nullable|string|max:20|regex:/^[0-9+\-\s()]{3,20}$/',
         ]);
 
         $data['password'] = Hash::make($data['password']);
@@ -56,6 +62,12 @@ class AdminController extends Controller
             'email'    => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'role_id'  => 'required|exists:roles,id',
+            'geboortedatum'   => 'nullable|date',
+            'straatnaam'      => 'nullable|string|max:255',
+            'huisnummer'      => 'nullable|integer|min:1|max:99999',
+            'postcode'        => 'nullable|string|max:7|regex:/^[1-9][0-9]{3}\s?[A-Za-z]{2}$/',
+            'woonplaats'      => 'nullable|string|max:255',
+            'telefoonnummer'  => 'nullable|string|max:20|regex:/^[0-9+\-\s()]{3,20}$/',
         ]);
 
         if (empty($data['password'])) {

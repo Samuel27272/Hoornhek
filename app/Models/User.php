@@ -24,6 +24,12 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'geboortedatum',
+        'straatnaam',
+        'huisnummer',
+        'postcode',
+        'woonplaats',
+        'telefoonnummer',
     ];
 
     /**
@@ -46,6 +52,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'geboortedatum' => 'date',
     ];
 
     /**

@@ -32,6 +32,16 @@
                     <input type="email" name="email" value="{{ old('email') }}" required maxlength="255">
                 </div>
                 <div class="form-group">
+                    <label>Geboortedatum</label>
+                    <input type="date" name="geboortedatum" value="{{ old('geboortedatum') }}"
+                        max="{{ now()->format('Y-m-d') }}">
+                </div>
+                <div class="form-group">
+                    <label>Telefoonnummer</label>
+                    <input type="tel" name="telefoonnummer" value="{{ old('telefoonnummer') }}" maxlength="20"
+                        inputmode="tel" pattern="[0-9+\-\s()]{6,20}" title="Gebruik alleen cijfers, spaties en + - ( ).">
+                </div>
+                <div class="form-group">
                     <label>Rol</label>
                     <select name="role_id" required>
                         <option value="">— Kies een rol —</option>
@@ -41,6 +51,34 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <span class="form-section-title">Adresgegevens</span>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>Straatnaam</label>
+                        <input type="text" name="straatnaam" value="{{ old('straatnaam') }}" maxlength="255">
+                    </div>
+                    <div class="form-group">
+                        <label>Huisnummer</label>
+                        <input type="number" name="huisnummer" value="{{ old('huisnummer') }}" min="1"
+                            max="99999" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>Postcode</label>
+                        <input type="text" name="postcode" value="{{ old('postcode') }}" maxlength="7"
+                            pattern="[1-9][0-9]{3}\s?[A-Za-z]{2}" title="Gebruik het formaat 1234 AB.">
+                    </div>
+                    <div class="form-group">
+                        <label>Woonplaats</label>
+                        <input type="text" name="woonplaats" value="{{ old('woonplaats') }}" maxlength="255">
+                    </div>
                 </div>
             </div>
 
