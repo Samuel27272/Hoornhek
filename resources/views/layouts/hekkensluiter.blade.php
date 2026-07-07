@@ -59,7 +59,7 @@
                     @yield('buiten_panel')
                 </div>
             @endif
-            <div class="panel" style="flex:1;">
+            <div class="panel" style="flex:1; min-width:0;">
                 @yield('content')
             </div>
         </div>

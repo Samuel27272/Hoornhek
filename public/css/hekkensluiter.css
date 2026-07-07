@@ -1,3 +1,15 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -66,7 +78,7 @@ body {
 
 .hs-search input {
     border: 0;
-    background: transpare nt;
+    background: transparent;
     outline: none;
     width: 160px;
     font-size: 13px;
@@ -92,6 +104,7 @@ body {
     border: 1px solid #ccc;
     padding: 8px;
     margin-top: 4px;
+    overflow-x: auto;
 }
 
 table {
@@ -136,4 +149,57 @@ table td {
 
 .hs-icon-btn:hover {
     background: #f0f0f0;
+}
+
+@media (max-width: 900px) {
+    .container {
+        padding: 0 10px;
+        margin: 8px auto;
+    }
+
+    .hs-tab {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+
+    .hs-search input {
+        width: 120px;
+    }
+
+    .panel {
+        padding: 6px;
+    }
+}
+
+@media (max-width: 600px) {
+    .hs-topbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .hs-logo {
+        justify-content: center;
+    }
+
+    .hs-tabs {
+        margin-left: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hs-actions {
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    .hs-search {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hs-search input {
+        width: 100%;
+        max-width: 200px;
+    }
 }
