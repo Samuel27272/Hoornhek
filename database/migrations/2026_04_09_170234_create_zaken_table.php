@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('zaken', function (Blueprint $table) {
             $table->id();
-            $table->string('zaaknummer')->unique(); // bijv. ZK-2026-001
+            $table->string('zaaknummer')->unique();
             $table->string('omschrijving');
-            $table->string('misdaad_type')->nullable(); // diefstal, mishandeling etc.
+            $table->string('misdaad_type')->nullable();
             $table->enum('status', ['open', 'gesloten', 'in_behandeling'])->default('open');
             $table->date('datum_aangemaakt');
             $table->date('datum_gesloten')->nullable();

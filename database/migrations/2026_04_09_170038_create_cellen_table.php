@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cellen', function (Blueprint $table) {
             $table->id();
-            $table->string('cel_nummer')->unique(); // bijv. A-01
+            $table->string('cel_nummer')->unique();
             $table->unsignedTinyInteger('capaciteit')->default(1);
             $table->enum('status', ['beschikbaar', 'bezet', 'buiten_gebruik'])->default('beschikbaar');
             $table->text('opmerkingen')->nullable();

@@ -23,9 +23,9 @@ return new class extends Migration
             $table->string('woonplaats');
             $table->string('telefoonnummer')->nullable();
             $table->string('email')->nullable();
-            $table->string('foto_pad')->nullable(); // opgeslagen pasfoto
+            $table->string('foto_pad')->nullable();
             $table->date('aanhoudingsdatum');
-            $table->date('datum_schorsing')->nullable(); // ontslagdatum
+            $table->date('datum_schorsing')->nullable();
             $table->enum('status', ['actief', 'inactief'])->default('actief');
             $table->foreignId('cel_id')->nullable()->constrained('cellen')->nullOnDelete();
             $table->text('opmerkingen')->nullable();

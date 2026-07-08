@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('gedetineerde_id')->constrained('gedetineerden')->cascadeOnDelete();
             $table->foreignId('uitgevoerd_door')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('gebeurtenis'); // bijv. "Overgeplaatst naar cel B-04"
+            $table->string('gebeurtenis');
             $table->foreignId('cel_oud')->nullable()->constrained('cellen')->nullOnDelete();
             $table->foreignId('cel_nieuw')->nullable()->constrained('cellen')->nullOnDelete();
             $table->enum('type', [

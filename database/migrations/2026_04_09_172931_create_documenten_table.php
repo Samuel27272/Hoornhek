@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('gedetineerde_id')->constrained('gedetineerden')->cascadeOnDelete();
             $table->foreignId('geupload_door')->nullable()->constrained('users')->nullOnDelete();
             $table->string('bestandsnaam');
-            $table->string('bestand_pad'); // opslag pad
-            $table->string('mime_type')->nullable(); // image/jpeg, video/mp4, application/pdf
+            $table->string('bestand_pad');
+            $table->string('mime_type')->nullable();
             $table->enum('type', [
                 'bewijs_document',
                 'bewijs_foto',
