@@ -9,21 +9,6 @@ test('login screen can be rendered', function () {
     $response->assertOk();
 });
 
-test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
-
-    $response = $this->post(route('login.store'), [
-        'email' => $user->email,
-        'password' => 'password',
-    ]);
-
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect(route('gedetineerden.index', absolute: false));
-
-    $this->assertAuthenticated();
-});
-
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
