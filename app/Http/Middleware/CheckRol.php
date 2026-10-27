@@ -10,7 +10,7 @@ class CheckRol
 {
     public function handle(Request $request, Closure $next, string ...$rollen): mixed
     {
-        if (!Auth::check() || !in_array(Auth::user()->rol, $rollen)) {
+        if (! Auth::check() || ! in_array(Auth::user()->rol, $rollen)) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

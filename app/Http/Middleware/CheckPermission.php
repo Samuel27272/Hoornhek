@@ -16,9 +16,10 @@ class CheckPermission
      */
     public function handle(Request $request, Closure $next, string $permission): Response
     {
-        if (!Auth::check() || !Auth::user()->hasPermission($permission)) {
+        if (! Auth::check() || ! Auth::user()->hasPermission($permission)) {
             abort(403, 'Geen toegang.');
         }
+
         return $next($request);
     }
 }

@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="nl">
-
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>HoornHek</title>
-    <link rel="stylesheet" href="{{ asset('css/app-klantenportaal.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app-klantenportaal.css') }}" />
 </head>
 
 <body>
-
     <nav class="navbar">
         <a class="logo-link" href="{{ url('/') }}">
             <div class="logo">
-                <img src="{{ asset('images/logo.png') }}" alt="HoornHek logo">
+                <img src="{{ asset('images/logo.png') }}" alt="HoornHek logo" />
             </div>
         </a>
 
@@ -24,7 +22,5 @@
     </nav>
 
     @yield('content')
-
 </body>
-
 </html>

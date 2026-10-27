@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="nl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Er ging iets mis</title>
     <style>
         :root {
@@ -29,8 +28,7 @@
             font-family: Arial, Helvetica, sans-serif;
             background:
                 radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 35%),
-                radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.08), transparent 35%),
-                var(--bg);
+                radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.08), transparent 35%), var(--bg);
             color: var(--text);
             padding: 24px;
         }
@@ -114,5 +112,4 @@
         </div>
     </main>
 </body>
-
 </html>

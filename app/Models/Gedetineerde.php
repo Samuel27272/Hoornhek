@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Gedetineerde extends Model
 {
     use HasFactory;
+
     /**
      * Table name matches migration
      *
      * @var string
      */
     protected $table = 'gedetineerden';
+
     /** @var array<int,string> */
     protected $fillable = [
         'bsn_nummer',

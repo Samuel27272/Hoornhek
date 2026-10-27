@@ -2,8 +2,6 @@
 
 namespace App\Actions\Fortify;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
@@ -13,17 +11,7 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        $user = $request->user();
-
-        if ($user->hasPermission('gedetineerden.view')) {
-            return redirect()->intended(route('gedetineerden.index'));
-        }
-
-        if ($user->hasPermission('bezoekers.view')) {
-            return redirect()->intended(route('bezoekers.index'));
-        }
-
-        return redirect()->intended('/dashboard');
+        return redirect()->intended($request->user()->determineHomeRoute());
     }
 }
 

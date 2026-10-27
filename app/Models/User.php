@@ -62,7 +62,7 @@ class User extends Authenticatable
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn($word) => Str::substr($word, 0, 1))
+            ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 
@@ -90,5 +90,33 @@ class User extends Authenticatable
     public function hasPermission(string $permission): bool
     {
         return $this->role?->permissions->contains('name', $permission) ?? false;
+    }
+
+    /**
+     * Bepaal de meest optimale landingsroute voor de gebruiker.
+     */
+    public function determineHomeRoute(): string
+    {
+        if ($this->hasPermission('gedetineerden.view')) {
+            return route('gedetineerden.index');
+        }
+
+        if ($this->hasPermission('zaken.view')) {
+            return route('zaken.index');
+        }
+
+        if ($this->hasPermission('cellen.view')) {
+            return route('cellen.index');
+        }
+
+        if ($this->hasPermission('bezoekers.view')) {
+            return route('bezoekers.index');
+        }
+
+        if ($this->hasPermission('admin.access')) {
+            return route('admin.index');
+        }
+
+        return route('dashboard');
     }
 }

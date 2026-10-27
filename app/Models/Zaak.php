@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Zaak extends Model
 {
     use HasFactory;
+
     /**
      * Table name matches migration
      *
      * @var string
      */
     protected $table = 'zaken';
+
     protected $fillable = [
         'zaaknummer',
         'omschrijving',

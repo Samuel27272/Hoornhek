@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BezoekerController;
 use App\Http\Controllers\CelController;
 use App\Http\Controllers\GedetineerdeController;
 use App\Http\Controllers\ZaakController;
-use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -136,4 +136,4 @@ Route::middleware(['auth'])->get('/two-factor-settings', function () {
     return view('two-factor-settings');
 })->name('two-factor.settings');
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

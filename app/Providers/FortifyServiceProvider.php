@@ -4,14 +4,16 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 use Laravel\Fortify\Fortify;
-use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
-use Illuminate\Support\Facades\Route as RouteFacade;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -20,8 +22,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(\Laravel\Fortify\Contracts\LoginResponse::class, \App\Actions\Fortify\LoginResponse::class);
-        $this->app->singleton(\Laravel\Fortify\Contracts\TwoFactorLoginResponse::class, \App\Actions\Fortify\TwoFactorLoginResponse::class);
+        $this->app->singleton(LoginResponse::class, \App\Actions\Fortify\LoginResponse::class);
+        $this->app->singleton(TwoFactorLoginResponse::class, \App\Actions\Fortify\TwoFactorLoginResponse::class);
     }
 
     /**
@@ -35,15 +37,13 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configurePasswordResetThrottling();
 
         RedirectIfAuthenticated::redirectUsing(function ($request) {
-            if (RouteFacade::has('gedetineerden.index')) {
-                return route('gedetineerden.index');
+            $user = $request->user();
+
+            if ($user) {
+                return $user->determineHomeRoute();
             }
 
-            if (RouteFacade::has('dashboard')) {
-                return route('dashboard');
-            }
-
-            return '/';
+            return route('home');
         });
     }
 
@@ -61,12 +61,12 @@ class FortifyServiceProvider extends ServiceProvider
      */
     private function configureViews(): void
     {
-        Fortify::loginView(fn() => view('pages::auth.login-custom'));
-        Fortify::verifyEmailView(fn() => view('pages::auth.verify-email'));
-        Fortify::twoFactorChallengeView(fn() => view('pages::auth.two-factor-challenge'));
-        Fortify::confirmPasswordView(fn() => view('pages::auth.confirm-password'));
-        Fortify::resetPasswordView(fn() => view('pages::auth.reset-password'));
-        Fortify::requestPasswordResetLinkView(fn() => view('pages::auth.forgot-password'));
+        Fortify::loginView(fn () => view('pages::auth.login-custom'));
+        Fortify::verifyEmailView(fn () => view('pages::auth.verify-email'));
+        Fortify::twoFactorChallengeView(fn () => view('pages::auth.two-factor-challenge'));
+        Fortify::confirmPasswordView(fn () => view('pages::auth.confirm-password'));
+        Fortify::resetPasswordView(fn () => view('pages::auth.reset-password'));
+        Fortify::requestPasswordResetLinkView(fn () => view('pages::auth.forgot-password'));
     }
 
     /**
@@ -79,7 +79,7 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });

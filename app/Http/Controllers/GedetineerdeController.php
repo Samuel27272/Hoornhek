@@ -202,16 +202,16 @@ class GedetineerdeController extends Controller
         ]);
 
         $bestand = $request->file('bestand');
-        $pad = $bestand->store('documenten/' . $gedetineerde->id, 'local');
+        $pad = $bestand->store('documenten/'.$gedetineerde->id, 'local');
 
         Document::create([
             'gedetineerde_id' => $gedetineerde->id,
-            'geupload_door'   => Auth::user()->id,
-            'bestandsnaam'    => $bestand->getClientOriginalName(),
-            'bestand_pad'     => $pad,
-            'mime_type'       => $bestand->getMimeType(),
-            'type'            => $request->type,
-            'omschrijving'    => $request->omschrijving,
+            'geupload_door' => Auth::user()->id,
+            'bestandsnaam' => $bestand->getClientOriginalName(),
+            'bestand_pad' => $pad,
+            'mime_type' => $bestand->getMimeType(),
+            'type' => $request->type,
+            'omschrijving' => $request->omschrijving,
         ]);
 
         return back()->with('success', 'Document geüpload.');

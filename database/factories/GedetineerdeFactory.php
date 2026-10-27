@@ -4,10 +4,9 @@ namespace Database\Factories;
 
 use App\Models\Gedetineerde;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Gedetineerde>
+ * @extends Factory<Gedetineerde>
  */
 class GedetineerdeFactory extends Factory
 {

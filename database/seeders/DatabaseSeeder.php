@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\Bezoeker;
-use App\Models\User;
 use App\Models\Cel;
 use App\Models\Gedetineerde;
-use App\Models\Zaak;
 use App\Models\Role;
-use Illuminate\Support\Str;
+use App\Models\User;
+use App\Models\Zaak;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
                 User::factory()->create([
                     'name' => $naam,
-                    'email' => $emailLocal . '@hoornhek.nl',
+                    'email' => $emailLocal.'@hoornhek.nl',
                     'role_id' => $role->id,
                 ]);
             }

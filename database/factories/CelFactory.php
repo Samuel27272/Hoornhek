@@ -6,7 +6,7 @@ use App\Models\Cel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cel>
+ * @extends Factory<Cel>
  */
 class CelFactory extends Factory
 {

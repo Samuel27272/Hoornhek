@@ -39,10 +39,10 @@ class CelController extends Controller
     {
         try {
             $data = $request->validate([
-                'cel_nummer'  => 'required|string|max:20|regex:/^[A-Za-z0-9\-]+$/',
-                'block'       => 'required|string|max:10',
-                'capaciteit'  => 'required|integer|min:1|max:999',
-                'status'      => 'required|in:beschikbaar,bezet,buiten_gebruik',
+                'cel_nummer' => 'required|string|max:20|regex:/^[A-Za-z0-9\-]+$/',
+                'block' => 'required|string|max:10',
+                'capaciteit' => 'required|integer|min:1|max:999',
+                'status' => 'required|in:beschikbaar,bezet,buiten_gebruik',
                 'opmerkingen' => 'nullable|string|max:2000',
             ]);
 
@@ -75,10 +75,10 @@ class CelController extends Controller
     {
         try {
             $data = $request->validate([
-                'cel_nummer'  => 'required|string|max:20|regex:/^[A-Za-z0-9\-]+$/',
-                'block'       => 'required|string|max:10',
-                'capaciteit'  => 'required|integer|min:1|max:999',
-                'status'      => 'required|in:beschikbaar,bezet,buiten_gebruik',
+                'cel_nummer' => 'required|string|max:20|regex:/^[A-Za-z0-9\-]+$/',
+                'block' => 'required|string|max:10',
+                'capaciteit' => 'required|integer|min:1|max:999',
+                'status' => 'required|in:beschikbaar,bezet,buiten_gebruik',
                 'opmerkingen' => 'nullable|string|max:2000',
             ]);
 

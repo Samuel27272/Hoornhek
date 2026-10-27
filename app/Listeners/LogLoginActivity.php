@@ -13,8 +13,8 @@ class LogLoginActivity
     {
         LoginLog::create([
             'user_id' => $event->user->id,
-            'email'   => $event->user->email,
-            'event'   => 'login',
+            'email' => $event->user->email,
+            'event' => 'login',
         ]);
     }
 
@@ -22,8 +22,8 @@ class LogLoginActivity
     {
         LoginLog::create([
             'user_id' => $event->user?->id,
-            'email'   => $event->user?->email,
-            'event'   => 'logout',
+            'email' => $event->user?->email,
+            'event' => 'logout',
         ]);
     }
 
@@ -31,8 +31,8 @@ class LogLoginActivity
     {
         LoginLog::create([
             'user_id' => $event->user?->id,
-            'email'   => $event->credentials['email'] ?? null,
-            'event'   => 'failed',
+            'email' => $event->credentials['email'] ?? null,
+            'event' => 'failed',
         ]);
     }
 }

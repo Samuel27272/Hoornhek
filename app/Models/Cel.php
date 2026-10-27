@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Cel extends Model
 {
     use HasFactory;
+
     /**
      * Table name matches migration
      *
      * @var string
      */
     protected $table = 'cellen';
+
     protected $fillable = [
         'cel_nummer',
         'block',
