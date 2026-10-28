@@ -6,11 +6,11 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CheckRol
+class CheckRole
 {
     public function handle(Request $request, Closure $next, string ...$rollen): mixed
     {
-        if (! Auth::check() || ! in_array(Auth::user()->rol, $rollen)) {
+        if (! Auth::check() || ! in_array(Auth::user()->role, $rollen)) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

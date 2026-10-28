@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckPermission;
-use App\Http\Middleware\CheckRol;
+use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\EnsureTwoFactorIsEnabled;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'rol' => CheckRol::class,
+            'role' => CheckRole::class,
             'permission' => CheckPermission::class,
             '2fa' => EnsureTwoFactorIsEnabled::class,
         ]);

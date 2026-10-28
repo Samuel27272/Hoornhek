@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -92,9 +93,6 @@ class User extends Authenticatable
         return $this->role?->permissions->contains('name', $permission) ?? false;
     }
 
-    /**
-     * Bepaal de meest optimale landingsroute voor de gebruiker.
-     */
     public function determineHomeRoute(): string
     {
         if ($this->hasPermission('gedetineerden.view')) {

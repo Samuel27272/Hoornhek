@@ -176,7 +176,7 @@ class GedetineerdeController extends Controller
 
         Gedetineerde::query()->whereKey($gedetineerden->getKey())->delete();
 
-        /** bij verwijderen van gedetineerde cel op beschikbaar zetten */
+        /** Bij verwijderen van gedetineerde cel op beschikbaar zetten */
         if ($celId) {
             $cel = Cel::query()->find($celId);
             /** @var Cel $cel */
